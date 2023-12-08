@@ -1,6 +1,6 @@
 import generateSnowflake from "@/app/db/utils/snowflake";
 class User {
-    id: string;
+    _id: string;
     username: string;
     email: string;
     password: string;
@@ -12,7 +12,7 @@ class User {
     status: string; // Online, Offline, Away, etc.
     createdAt: Date;
     constructor(username: string, email: string, password: string, chats: string[] = [], friends: string[] = [], customStatus: string = "", phoneNumber: string = "", avatar: string, status: string = "", createdAt: Date = new Date()) {
-        this.id = generateSnowflake();
+        this._id = generateSnowflake();
         this.username = username;
         this.email = email;
         this.password = password;
@@ -26,7 +26,7 @@ class User {
     }
     convertToJSON() {
         return {
-            id: this.id,
+            _id: this._id,
             username: this.username,
             email: this.email,
             password: this.password,

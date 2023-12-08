@@ -10,6 +10,8 @@ const client = new MongoClient(process.env.MONGOURI, {
   tlsCertificateKeyFile: credentials,
   serverApi: ServerApiVersion.v1
 });
-// Export client
-export default client;
+
+const db = client.db('NextChat');
+// Export db connection
+export default db;
 

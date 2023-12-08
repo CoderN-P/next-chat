@@ -1,13 +1,13 @@
 import generateSnowflake from "@/app/db/utils/snowflake";
 
 class Message {
-    id: string;
+    _id: string;
     content: string;
     sender: string;
     sendDate: Date;
 
     constructor(content: string, sender: string, sendDate: Date = new Date()) {
-        this.id = generateSnowflake();
+        this._id = generateSnowflake();
         this.content = content;
         this.sender = sender;
         this.sendDate = sendDate;
@@ -15,7 +15,7 @@ class Message {
 
     convertToJSON() {
         return {
-            id: this.id,
+            _id: this._id,
             content: this.content,
             sender: this.sender,
             sendDate: this.sendDate
