@@ -1,4 +1,5 @@
 import generateSnowflake from "@/db/utils/snowflake";
+
 class User {
     _id: string;
     username: string;
@@ -11,7 +12,8 @@ class User {
     avatar: string; // URL to avatar
     status: string; // Online, Offline, Away, etc.
     createdAt: Date;
-    constructor(username: string, email: string, password: string, chats: string[] = [], friends: string[] = [], customStatus: string = "", phoneNumber: string = "", avatar: string, status: string = "", createdAt: Date = new Date()) {
+
+    constructor({username, email, password, chats=[], friends=[], customStatus="", phoneNumber="", avatar="", status="", createdAt=new Date()} : { username: string, email: string, password: string, chats?: string[], friends?: string[], customStatus?: string, phoneNumber?: string, avatar?: string, status?: string, createdAt?: Date}) {
         this._id = generateSnowflake();
         this.username = username;
         this.email = email;
@@ -38,10 +40,6 @@ class User {
             status: this.status,
             createdAt: this.createdAt
         }
-    }
-
-    static convertFromJSON(json: any) {
-        return new User(json.username, json.email, json.password, json.chats, json.friends, json.customStatus, json.phoneNumber, json.avatar, json.status, json.createdAt);
     }
 }
 
