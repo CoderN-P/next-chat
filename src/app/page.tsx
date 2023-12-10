@@ -8,6 +8,7 @@ import MessageBox from "@/components/messageBox";
 import ChatHeader from "@/components/chatHeader";
 import {useState} from "react";
 import MemberSidebar from "@/components/memberSidebar";
+import Chat from "@/components/chat";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -60,7 +61,8 @@ export default function Home() {
 
         <div className={className}>
             <ChatHeader toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
-            <LoginModal />
+            <Chat/>
+
             <MessageBox/>
         </div>
         </div>

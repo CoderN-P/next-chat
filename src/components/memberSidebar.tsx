@@ -5,7 +5,7 @@ import ChatMember from "@/components/chatMember";
 
 export default function MemberSidebar({toggleMemberSidebar = () => { }}){
     const h1 = "text-2xl";
-    const aside = "absolute top-0 right-0 z-40 w-64 h-full";
+    const aside = "absolute border-l dark:border-neutral-800 top-0 right-0 z-40 w-64 h-full";
     const plusButton = "flex flex-row justify-center items-center w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700";
     const closeButton = "flex flex-row justify-center items-center w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700";
 

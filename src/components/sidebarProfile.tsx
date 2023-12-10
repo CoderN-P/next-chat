@@ -1,5 +1,5 @@
 export default function SidebarProfile({expanded = false}){
-    let className = "absolute bottom-0 p-4 left-0 flex flex-row w-24 lg:w-64 hover:bg-neutral-300 dark:hover:bg-neutral-800 h-20 bg-neutral-200 dark:bg-neutral-900 rounded-md shadow";
+    let className = "absolute border-t dark:border-neutral-800 bottom-0 p-4 left-0 flex flex-row w-24 lg:w-64 hover:bg-neutral-300 dark:hover:bg-neutral-800 h-20 bg-neutral-200 dark:bg-neutral-900 shadow";
     let className2 = "hidden lg:block flex-1 flex flex-col h-full justify-center";
 
     if (expanded){
