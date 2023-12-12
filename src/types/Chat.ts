@@ -6,12 +6,14 @@ class Chat {
     users: string[];
     messages: Message[];
     createdAt: Date;
-    constructor(name: string, users: string[], messages = [], createdAt: Date = new Date()) {
+    avatar: string;
+    constructor(name: string, users: string[], messages = [], createdAt: Date = new Date(), avatar: string = "") {
         this._id = generateSnowflake();
         this.name = name;
         this.users = users;
         this.createdAt = createdAt;
         this.messages = messages;
+        this.avatar = avatar;
     }
     convertToJSON() {
         return {
@@ -19,7 +21,8 @@ class Chat {
             name: this.name,
             users: this.users,
             createdAt: this.createdAt,
-            messages: [...this.messages.map(message => message.convertToJSON())]
+            messages: [...this.messages.map(message => message.convertToJSON())],
+            avatar: this.avatar
         }
     }
 

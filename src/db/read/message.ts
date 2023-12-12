@@ -1,4 +1,4 @@
-import db from '@/db/connect';
+import {db} from '@/db/connect';
 import Message from '@/types/Message';
 
 async function readMessage(id: string, chatId: string) {

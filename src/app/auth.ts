@@ -1,41 +1,56 @@
 import type { NextAuthOptions } from "next-auth";
+import { DefaultUser } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import readUser from "@/db/read/user";
 import CredentialsProvider from "next-auth/providers/credentials";
-
+import {client, db} from '@/db/connect';
+import Google from "next-auth/providers/google";
 var bcryptjs = require('bcryptjs');
 
+
+
 export const authOptions: NextAuthOptions = {
+    adapter: MongoDBAdapter(client.connect(), {
+        databaseName: 'NextChat',
+    }),
   session: {
-    strategy: "jwt",
+      strategy: "jwt",
   },
   providers: [
-    CredentialsProvider({
-      name: "Sign in",
-      credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "example@example.com",
-        },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null;
-        const user = await readUser(null, credentials.email);
-        if (!user || !(await bcryptjs.compare(credentials.password, user.password))) return null;
-
-        return {
-            id: user._id,
-            name: user.username,
-            email: user.email,
-            randomKey: "key",
-        }
-      },
-    }),
-      GithubProvider({
-            clientId: process.env.GITHUB_ID ?? "",
-            clientSecret: process.env.GITHUB_SECRET ?? "",
-      })
+      Google({
+          clientId: process.env.GOOGLE_ID ?? "",
+          clientSecret: process.env.GOOGLE_SECRET ?? "",
+          allowDangerousEmailAccountLinking: true,
+        }),
   ],
+    callbacks: {
+        async signIn(user) {
+
+            // Check if the user already exists in the database
+            const existingUser = await db.collection('users').findOne({email: user.user.email});
+
+            // If the user does not exist, it's a new user
+            if (!existingUser) {
+                // Add additional fields to the new user
+                const additionalFields = {
+                    // Add your custom fields here
+                    // For example:
+                    chats: [],
+                    friends: [],
+                    customStatus: '',
+                    lastReadChat: '',
+                    status: '',
+                    phoneNumber: '',
+                    googleId: user.user.id,
+                };
+
+                // Insert the new user with additional fields into the database
+                await db.collection('users').insertOne({...user.user, ...additionalFields});
+            }
+
+            // You can also modify the user object here if needed
+            return true;
+        },
+    },
 };

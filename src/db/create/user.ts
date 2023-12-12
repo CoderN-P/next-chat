@@ -1,4 +1,4 @@
-import db from '@/db/connect';
+import {db} from '@/db/connect';
 import User from '@/types/User';
 
 async function createUser(user: User) {

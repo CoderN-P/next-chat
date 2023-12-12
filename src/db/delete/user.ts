@@ -1,4 +1,4 @@
-import db from '@/db/connect';
+import {db} from '@/db/connect';
 
 async function deleteUser(id: string) {
     if (!id) throw new Error('No ID provided.');

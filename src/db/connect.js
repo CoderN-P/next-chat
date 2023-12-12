@@ -11,7 +11,9 @@ const client = new MongoClient(process.env.MONGOURI, {
   serverApi: ServerApiVersion.v1
 });
 
+
 const db = client.db('NextChat');
 // Export db connection
-export default db;
+export {db, client};
+
 

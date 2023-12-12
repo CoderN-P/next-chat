@@ -1,4 +1,4 @@
-import db from '@/db/connect'
+import {db} from '@/db/connect'
 import Chat from '@/types/Chat'
 
 async function readChat(id: string){
