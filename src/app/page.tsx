@@ -10,6 +10,7 @@ import MemberSidebar from "@/components/memberSidebar";
 import Chat from "@/components/chat";
 import {useSession} from "next-auth/react";
 import getUser from "@/app/actions/getUser";
+import CreateChatUI from "@/components/createChatUI";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -18,6 +19,7 @@ export default function Home() {
     let [chatSidebarClass, setChatSidebarClass] = useState("");
     const [user, setUser] = useState<Map<string, any>  | null>(null);
     const [chatID, setChatID] = useState<string | null>(null);
+    const [createChatUI, setCreateChatUI] = useState<boolean>(false);
     // Get current user
     const {data: session, status} = useSession();
 
@@ -49,6 +51,10 @@ export default function Home() {
         setExpanded(!expanded);
     }
 
+    function toggleCreateChatUI(){
+         setCreateChatUI(!createChatUI);
+    }
+
     function toggleMemberSidebar(){
         if (!memberExpanded){
              setClassName("flex-1 flex flex-col h-full blur-sm");
@@ -67,10 +73,10 @@ export default function Home() {
   return (
     <main className="h-screen w-screen">
         { !session && status != "loading" ? <LoginModal/> : null}
-
-        <div className={!session && status != "loading" ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
+        { createChatUI ? <CreateChatUI toggleCreateChatUI={toggleCreateChatUI}/> : null }
+        <div className={(!session && status != "loading") || (createChatUI) ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
         <div className={chatSidebarClass}>
-            { expanded ? <Sidebar user={user} expanded={expanded} toggleSidebar={toggleSidebar}/>: null }
+            { expanded ? <Sidebar user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI}/>: null }
         </div>
 
 
@@ -78,7 +84,7 @@ export default function Home() {
 
         <div className="flex flex-row h-full w-full">
         <div className={chatSidebarClass}>
-            { !expanded ? <Sidebar user={user} expanded={expanded} toggleSidebar={toggleSidebar} />: null }
+            { !expanded ? <Sidebar user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} />: null }
         </div>
 
         <div className={className}>

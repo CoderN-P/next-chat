@@ -4,17 +4,9 @@ import SidebarChat from './sidebarChat';
 import SidebarProfile from './sidebarProfile';
 import Chat from '@/types/Chat';
 import getChats from "@/app/actions/getChats";
-import CreateChatUI from "@/components/createChatUI";
 
-export default function Sidebar({user = null, expanded= false, toggleSidebar=()=>{}} : {user?: Map<string, any>|null, expanded?: boolean, toggleSidebar?: Function}){
-    let [className, setClassName] = useState("hidden")
-    function toggleCreateChatUI(){
-        if (className == "hidden"){
-            setClassName("block");
-        } else {
-            setClassName("hidden");
-        }
-    }
+export default function Sidebar({user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}} : {user?: Map<string, any>|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function}){
+
     let initialState = [];
     if (user){
         for (let i = 0; i < user["chats"].length; i++){
@@ -52,7 +44,6 @@ export default function Sidebar({user = null, expanded= false, toggleSidebar=()=
     return (
         <aside className={aside}>
             <div className="flex flex-col w-full h-full px-4 bg-white border-r dark:bg-neutral-950 dark:border-neutral-800">
-                <div className={className}><CreateChatUI/></div>
                 <div className="flex flex-row my-4 justify-between items-center">
                     <h1 className={h1}><strong>Your Chats</strong></h1>
                     <button className={plusButton} onClick={() => toggleCreateChatUI()}>
