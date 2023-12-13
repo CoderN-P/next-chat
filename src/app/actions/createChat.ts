@@ -3,8 +3,9 @@ import createChat from '@/db/create/chat';
 import Chat from "@/types/Chat";
 
 async function createChatAction(data: string) {
-    const dataObj = JSON.parse(data);
-    return await createChat(Chat.convertFromJSON(dataObj));
+    const dataObj = Chat.convertFromJSON(JSON.parse(data));
+    await createChat(dataObj);
+    return JSON.stringify(dataObj.convertToJSON());
 }
 
 export default createChatAction;

@@ -11,14 +11,14 @@ async function getChats(email: string) {
         messages: 0,
     }
 
-    const userCollection = db.collection('users');
 
+    const chatCollection = db.collection('chats');
     for (let i = 0; i < chats.length; i++) {
-        const chat = await userCollection.findOne({_id: chats[i]}, {projection});
-        chatObjects.push(Chat.convertFromJSON(chat));
+        const chat = await chatCollection.findOne({_id: chats[i]}, {projection: projection});
+        chatObjects.push(chat);
     }
 
-    return chatObjects;
+    return JSON.stringify(chatObjects);
 }
 
 export default getChats;

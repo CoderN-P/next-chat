@@ -6,9 +6,9 @@ async function createChat(chat: Chat){
   for (let i = 0; i < chat.users.length; i++) {
     const user = chat.users[i];
     const userCollection = db.collection('users');
-    await userCollection.updateOne({_id: user}, {$push: {chats: chat._id}});
+    await userCollection.updateOne({email: user}, {$push: {chats: chat._id}});
   }
-  return await chats.insertOne(chat.convertToJSON());
+  await chats.insertOne(chat.convertToJSON());
 }
 
 export default createChat;

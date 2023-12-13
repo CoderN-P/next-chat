@@ -7,8 +7,8 @@ class Chat {
     messages: Message[];
     createdAt: Date;
     avatar: string;
-    constructor(name: string, users: string[], messages = [], createdAt: Date = new Date(), avatar: string = "") {
-        this._id = generateSnowflake();
+    constructor(_id=generateSnowflake(), name: string, users: string[], messages = [], createdAt: Date = new Date(), avatar: string = "") {
+        this._id = _id;
         this.name = name;
         this.users = users;
         this.createdAt = createdAt;
@@ -27,8 +27,10 @@ class Chat {
     }
 
     static convertFromJSON(json: any) {
-        return new Chat(json.name, json.users, json.createdAt);
+        return new Chat(json._id?json._id:generateSnowflake(), json.name, json.users, json.messages?json.messages:[], json.createdAt?json.createdAt:new Date(), json.avatar?json.avatar:"");
     }
+
+
 }
 
 export default Chat;
