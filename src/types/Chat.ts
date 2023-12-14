@@ -1,5 +1,6 @@
 import generateSnowflake from '@/db/utils/snowflake';
 import Message from './Message';
+
 class Chat {
     _id: string;
     name: string;

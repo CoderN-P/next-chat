@@ -3,9 +3,9 @@ import React, {useState} from 'react';
 import SidebarChat from './sidebarChat';
 import SidebarProfile from './sidebarProfile';
 import Chat from '@/types/Chat';
-import getChats from "@/app/actions/getChats";
+import User from '@/types/User';
 
-export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}} : {chats: (Chat|null)[], user?: Map<string, any>|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function}){
+export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}, loadChat = () => {}, curChatID=null} : {chats: (Chat|null)[], user?: User|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function, loadChat?: Function, curChatID?: string|null}){
 
     let h1 = "text-2xl hidden lg:block";
     let aside = "flex-0 hidden md:block top-0 left-0 z-40 w-24 lg:w-64 h-full transition-transform -translate-x-full sm:translate-x-0";
@@ -43,11 +43,14 @@ export default function Sidebar({chats, user = null, expanded= false, toggleSide
                 {
                     chats.map(
                         (chat: Chat | null, index) => (
-                            <SidebarChat key={index} chat={chat} expanded={expanded}/>
+                            <button onClick={() => loadChat(chat?._id)} className="w-full" key={index}>
+                                <SidebarChat active={chat?._id == curChatID && curChatID} chat={chat} expanded={expanded}/>
+                            </button>
                         )
                     )
                 }
             </div>
+
             <SidebarProfile user={user} expanded={expanded}/>
         </aside>
     )

@@ -8,7 +8,7 @@ export default function SidebarChat({ chat=null, active= false , expanded= false
     let className2 = "hidden lg:block ml-2 flex-1 flex flex-col h-full justify-center";
 
     if (expanded){
-        className2 = "ml-2 flex-1 flex flex-col h-full justify-center";
+        className2 = " flex-1 flex flex-col h-full justify-center";
     }
     if (active) {
         className = "mb-2 p-2 dark:border-neutral-800 border flex flex-row w-full hover:bg-neutral-300 dark:hover:bg-neutral-900 h-16 bg-neutral-200 dark:bg-neutral-800 rounded-md shadow";

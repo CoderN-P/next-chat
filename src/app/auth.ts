@@ -1,13 +1,8 @@
 import type { NextAuthOptions } from "next-auth";
-import { DefaultUser } from "next-auth";
-import GithubProvider from "next-auth/providers/github";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import readUser from "@/db/read/user";
-import CredentialsProvider from "next-auth/providers/credentials";
 import {client, db} from '@/db/connect';
 import Google from "next-auth/providers/google";
-var bcryptjs = require('bcryptjs');
-
+import generateSnowflake from "@/db/utils/snowflake";
 
 
 export const authOptions: NextAuthOptions = {

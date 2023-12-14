@@ -3,8 +3,8 @@ import Chat from '@/types/Chat';
 import readUser from '@/db/read/user';
 import {db} from "@/db/connect";
 
-async function getChats(email: string) {
-    const user = await readUser("", email);
+async function getChats(id: string) {
+    const user = await readUser(id);
     const chats = user.chats;
     const chatObjects : Chat[] = [];
     const projection = {

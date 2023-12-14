@@ -1,9 +1,8 @@
-import SidebarChat from "@/components/sidebarChat";
-import SidebarProfile from "@/components/sidebarProfile";
 import React from "react";
 import ChatMember from "@/components/chatMember";
+import User from "@/types/User";
 
-export default function MemberSidebar({toggleMemberSidebar = () => { }}){
+export default function MemberSidebar({users, toggleMemberSidebar = () => { }} : {users: (User|null)[], toggleMemberSidebar?: Function}){
     const h1 = "text-2xl";
     const aside = "absolute border-l dark:border-neutral-800 top-0 right-0 z-40 w-64 h-full";
     const plusButton = "flex flex-row justify-center items-center w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700";
@@ -25,7 +24,13 @@ export default function MemberSidebar({toggleMemberSidebar = () => { }}){
                         </svg>
                     </button>
                 </div>
-                <ChatMember/>
+                {
+                    users.map(
+                        (user : User | null, index) => (
+                            <ChatMember key={index} user={user}/>
+                        )
+                    )
+                }
 
             </div>
         </aside>

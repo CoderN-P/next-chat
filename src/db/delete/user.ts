@@ -1,9 +1,11 @@
 import {db} from '@/db/connect';
+const mongodb = require('mongodb');
 
 async function deleteUser(id: string) {
     if (!id) throw new Error('No ID provided.');
     const users = db.collection('users');
-    return await users.deleteOne({_id: id});
+    const objectId = mongodb.ObjectId.createFromHexString(id);
+    return await users.deleteOne({_id: objectId});
 }
 
 export default deleteUser;
