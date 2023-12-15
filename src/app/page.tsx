@@ -4,7 +4,7 @@ import '@/app/globals.css';
 import Sidebar from "@/components/sidebar";
 import MessageBox from "@/components/messageBox";
 import ChatHeader from "@/components/chatHeader";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import MemberSidebar from "@/components/memberSidebar";
 import ChatUI from "@/components/chat";
 import Chat from "@/types/Chat";
@@ -16,6 +16,10 @@ import getChats from "@/app/actions/getChats";
 import User from "@/types/User";
 import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
+import io from "socket.io-client";
+import Message from "@/types/Message";
+import ChatMessage from "@/components/message";
+import {createPortal} from "react-dom";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -32,8 +36,16 @@ export default function Home() {
     const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
     // Get current user
     const {data: session, status} = useSession();
+    /*
+    var socket: any;
+    socket = io("http://localhost:3001");
 
-     let initialState = [];
+    if (currentChat){
+        socket.emit("join", currentChat._id);
+    }
+
+    */
+    let initialState = [];
     if (user){
         for (let i = 0; i < user.chats.length; i++){
             initialState.push(null);
@@ -82,8 +94,37 @@ export default function Home() {
         });
     }
     function sendMessage(message: string){
-        console.log(message);
+        const messageData = {
+            content: message,
+            sender: user?._id,
+            sendDate: new Date().toISOString(),
+        }
+        setCurrentChat((curChat) => {
+            if (curChat) {
+                return Chat.convertFromJSON({
+                        "_id": curChat._id,
+                        "name": curChat.name,
+                        "avatar": curChat.avatar,
+                        "users": curChat.users,
+                        "messages": curChat.messages.concat([Message.convertFromJSON(messageData)])
+                    }
+                );
+            }
+            return curChat;
+        });
+
+        // socket.emit("message", messageData);
     }
+    /*
+    socket.on("message", (message: string) => {
+        const messageData = JSON.parse(message);
+        if (messageData["chatID"] != currentChat?._id){
+            return;
+        }
+        currentChat?.messages.push(Message.convertFromJSON(messageData));
+    });
+    */
+
     // Get current user
 
     function toggleSidebar(){
@@ -172,9 +213,6 @@ export default function Home() {
         </div>
         </div>
             </div>
-
-
-
     </main>
   );
 }

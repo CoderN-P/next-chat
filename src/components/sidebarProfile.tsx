@@ -16,7 +16,7 @@ export default function SidebarProfile({user=null, expanded = false} : {user?: U
 
             <div className=" flex-0 w-16 h-16 rounded-l-md items-center flex-1">
                 <div className="relative">
-                    {!user ? <Skeleton circle={true} height={48} width={48} baseColor="#404040" highlightColor="#27272a" /> :
+                    {!user ? <Skeleton circle={true} height={48} width={48} className="animate-pulse" baseColor="#404040" highlightColor="#404040" /> :
                         <><img className="rounded-full h-12 w-12" src={user.image} alt="Profile Picture"/><span
                             className="bottom-0 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span></>
                     }
@@ -24,10 +24,10 @@ export default function SidebarProfile({user=null, expanded = false} : {user?: U
             </div>
 
             <div className={className2}>
-                {!user ? <Skeleton baseColor="#404040" highlightColor="#27272a" /> :
+                {!user ? <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040" /> :
                     <h1 className="text-lg">{user.name}</h1>
                 }
-                {!user ? <Skeleton baseColor="#404040" highlightColor="#27272a" /> :
+                {!user ? <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040" /> :
                     <h2 className="text-sm text-neutral-400 ">{user.email}</h2>
                 }
             </div>

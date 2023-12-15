@@ -10,14 +10,14 @@ export default function ChatMember({user=null}:{user: User|null}){
                 <div className="relative">
                     { user ?
                         <img className="rounded-full h-12 w-12 " src={user.image} alt="Profile Picture"/>
-                        : <Skeleton circle={true} height={48} width={48} baseColor="#404040" highlightColor="#27272a" />
+                        : <Skeleton className="animate-pulse" circle={true} height={48} width={48} baseColor="#404040" highlightColor="#404040" />
                     }
                     <span className="bottom-0 z-10 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
                 </div>
             </div>
             <div className="flex-1 flex flex-col mr-2">
-                <h1 className="text-md">{user? user.name : <Skeleton baseColor="#525252" highlightColor="#3f3f46"/>}</h1>
-                <h2 className="text-xs text-neutral-400">{user? (user.customStatus ? user.customStatus : user.email) : <Skeleton baseColor="#525252" highlightColor="#3f3f46"/>}
+                <h1 className="text-md">{user? user.name : <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/>}</h1>
+                <h2 className="text-xs text-neutral-400">{user? (user.customStatus ? user.customStatus : user.email) : <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/>}
                 </h2>
             </div>
 
