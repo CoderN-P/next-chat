@@ -1,4 +1,4 @@
-import User from '@/types/User';
+import User from '@/db/types/User';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 

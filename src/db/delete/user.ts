@@ -1,4 +1,4 @@
-import {db} from '@/db/connect';
+import {db} from '../connect';
 const mongodb = require('mongodb');
 
 async function deleteUser(id: string) {
@@ -8,4 +8,4 @@ async function deleteUser(id: string) {
     return await users.deleteOne({_id: objectId});
 }
 
-export default deleteUser;
+export {deleteUser};

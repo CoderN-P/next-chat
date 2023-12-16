@@ -1,7 +1,5 @@
 "use server";
-import readChat from '@/db/read/chat';
-import readUser from '@/db/read/user';
-import Chat from '@/types/Chat';
+import {readChat, readUser} from '@/db';
 
 export default async function getChatMembers(chatID: string){
     const chat = await readChat(chatID);

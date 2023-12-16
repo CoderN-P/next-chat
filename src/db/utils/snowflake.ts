@@ -7,4 +7,4 @@ function generateSnowflake() {
     return ((time * 1000) + random).toString();
 }
 
-export default generateSnowflake;
+export {generateSnowflake};

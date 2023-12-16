@@ -1,6 +1,5 @@
 'use server';
-import createChat from '@/db/create/chat';
-import Chat from "@/types/Chat";
+import {createChat, Chat} from '@/db';
 
 async function createChatAction(data: string) {
     const dataObj = Chat.convertFromJSON(JSON.parse(data));

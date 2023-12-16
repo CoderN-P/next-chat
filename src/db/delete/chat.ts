@@ -1,4 +1,4 @@
-import {db} from '@/db/connect';
+import {db} from '../connect';
 
 async function deleteChat(id: string) {
     if (!id) throw new Error('No ID provided.');
@@ -10,4 +10,4 @@ async function deleteChat(id: string) {
     return await chats.deleteOne({_id: id});
 }
 
-export default deleteChat;
+export {deleteChat};

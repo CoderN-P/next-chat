@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import {client, db} from '@/db/connect';
+import {client, db} from '@/db';
 import Google from "next-auth/providers/google";
 import generateSnowflake from "@/db/utils/snowflake";
 

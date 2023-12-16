@@ -1,4 +1,4 @@
-import generateSnowflake from "@/db/utils/snowflake";
+import {generateSnowflake} from '../utils/snowflake';
 
 class Message {
     _id: string;
@@ -27,4 +27,4 @@ class Message {
     }
 }
 
-export default Message;
+export {Message};

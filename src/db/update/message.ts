@@ -1,4 +1,4 @@
-import {db} from '@/db/connect';
+import {db} from '../connect';
 
 
 async function updateMessage(id: string, chatId: string, message: Map<string, any>) {
@@ -11,4 +11,4 @@ async function updateMessage(id: string, chatId: string, message: Map<string, an
     return await chats.updateOne({_id: chatId}, {$set: newMessage}, {arrayFilters: [{'element._id': id}]});
 }
 
-export default updateMessage;
+export {updateMessage};

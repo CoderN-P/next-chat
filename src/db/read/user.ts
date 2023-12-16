@@ -1,5 +1,5 @@
-import {db} from '@/db/connect';
-import User from '@/types/User';
+import {db} from '../connect';
+import {User} from '../types/User';
 
 const mongodb = require('mongodb');
 
@@ -17,4 +17,4 @@ async function readUser(id: string|null=null, email: string|null=null, username:
     }
 }
 
-export default readUser;
+export {readUser};

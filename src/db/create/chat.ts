@@ -1,5 +1,5 @@
-import {db} from '@/db/connect';
-import Chat from '@/types/Chat'
+import {db} from '../connect';
+import {Chat} from '../types/Chat';
 const mongodb = require('mongodb');
 
 async function createChat(chat: Chat){
@@ -13,4 +13,4 @@ async function createChat(chat: Chat){
   await chats.insertOne(chat.convertToJSON());
 }
 
-export default createChat;
+export {createChat};

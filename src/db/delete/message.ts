@@ -1,4 +1,4 @@
-import {db} from '@/db/connect';
+import {db} from '../connect';
 
 async function deleteMessage(id: string, chatId: string) {
     if (!id) throw new Error('No ID provided.');
@@ -6,4 +6,4 @@ async function deleteMessage(id: string, chatId: string) {
     return await chats.updateOne({_id: chatId}, {$pull: {messages: {_id: id}}});
 }
 
-export default deleteMessage;
+export {deleteMessage};

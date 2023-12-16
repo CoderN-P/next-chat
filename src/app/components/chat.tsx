@@ -1,9 +1,9 @@
 "use client";
 
-import ChatMessage from "@/components/message";
-import Chat from "@/types/Chat";
-import User from "@/types/User";
-import Message from "@/types/Message";
+import ChatMessage from "@/app/components/message";
+import Chat from "@/db/types/Chat";
+import User from "@/db/types/User";
+import Message from "@/db/types/Message";
 
 export default function ChatUI({chat=null, users, loadingMessages=false}: {chat?: Chat | null, users: (User|null)[], loadingMessages: boolean}){
     const messages = []

@@ -1,25 +1,22 @@
 "use client";
-import LoginModal from "@/components/login";
+import LoginModal from "@/app/components/login";
 import '@/app/globals.css';
-import Sidebar from "@/components/sidebar";
-import MessageBox from "@/components/messageBox";
-import ChatHeader from "@/components/chatHeader";
+import Sidebar from "@/app/components/sidebar";
+import MessageBox from "@/app/components/messageBox";
+import ChatHeader from "@/app/components/chatHeader";
 import {useEffect, useState} from "react";
-import MemberSidebar from "@/components/memberSidebar";
-import ChatUI from "@/components/chat";
-import Chat from "@/types/Chat";
+import MemberSidebar from "@/app/components/memberSidebar";
+import ChatUI from "@/app/components/chat";
+import {Chat, User, Message} from "@/db";
+
 import {useSession} from "next-auth/react";
 import getUser from "@/app/actions/getUser";
-import CreateChatUI from "@/components/createChatUI";
+import CreateChatUI from "@/app/components/createChatUI";
 import createChatAction from "@/app/actions/createChat";
 import getChats from "@/app/actions/getChats";
-import User from "@/types/User";
 import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
 import io from "socket.io-client";
-import Message from "@/types/Message";
-import ChatMessage from "@/components/message";
-import {createPortal} from "react-dom";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -78,20 +75,29 @@ export default function Home() {
         });
     }
 
-    function createChatClient(name: string){
+    function createChatClient(name: string, mode: string){
         setLoadingShareCode(true);
         if (!user){
             return;
         }
-        createChatAction(JSON.stringify({name: name, users: [user._id], avatar: user["image"]})).then((data: string) => {
-            setLoadingShareCode(false);
-            data = JSON.parse(data);
-            const newChat = Chat.convertFromJSON(data);
-            setShareCode(newChat._id);
-            const newChats = [newChat, ...chats];
-            setChats(newChats);
+        if (mode == "name") {
+            createChatAction(JSON.stringify({
+                name: name,
+                users: [user._id],
+                avatar: user["image"]
+            })).then((data: string) => {
+                setLoadingShareCode(false);
+                data = JSON.parse(data);
+                const newChat = Chat.convertFromJSON(data);
+                setShareCode(newChat._id);
+                const newChats = [newChat, ...chats];
+                setChats(newChats);
 
-        });
+            });
+        } else {
+            // TODO: Add share code support
+            return;
+        }
     }
     function sendMessage(message: string){
         const messageData = {

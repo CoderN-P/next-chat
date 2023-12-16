@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import SidebarChat from './sidebarChat';
 import SidebarProfile from './sidebarProfile';
-import Chat from '@/types/Chat';
-import User from '@/types/User';
+import Chat from '@/db/types/Chat';
+import User from '@/db/types/User';
 
 export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}, loadChat = () => {}, curChatID=null} : {chats: (Chat|null)[], user?: User|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function, loadChat?: Function, curChatID?: string|null}){
 
@@ -26,7 +26,7 @@ export default function Sidebar({chats, user = null, expanded= false, toggleSide
 
     return (
         <aside className={aside}>
-            <div className="flex flex-col w-full h-[calc(100%-80px)] px-4 bg-white overflow-y-scroll border-r dark:bg-neutral-950 dark:border-neutral-800">
+            <div className="flex flex-col pl-4 w-full h-[calc(100%-80px)] bg-white overflow-y-scroll border-r dark:bg-neutral-950 dark:border-neutral-800">
                 <div className="flex flex-row my-4 justify-between items-center">
                     <h1 className={h1}><strong>Your Chats</strong></h1>
                     <button className={plusButton} onClick={() => toggleCreateChatUI()}>
@@ -44,7 +44,7 @@ export default function Sidebar({chats, user = null, expanded= false, toggleSide
                     chats.map(
                         (chat: Chat | null, index) => (
                             <button onClick={() => loadChat(chat?._id)} className="w-full" key={index}>
-                                <SidebarChat active={chat?._id == curChatID && curChatID} chat={chat} expanded={expanded}/>
+                                <SidebarChat active={((chat?._id == curChatID) && curChatID) as boolean} chat={chat} expanded={expanded}/>
                             </button>
                         )
                     )

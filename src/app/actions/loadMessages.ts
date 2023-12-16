@@ -1,5 +1,5 @@
 'use server';
-import readChat from "@/db/read/chat";
+import {readChat} from "@/db";
 
 async function loadMessages(chatId: string, idx: number, limit: number) {
     // idx is the index of the last message loaded

@@ -1,6 +1,6 @@
 import React from "react";
-import ChatMember from "@/components/chatMember";
-import User from "@/types/User";
+import ChatMember from "@/app/components/chatMember";
+import User from "@/db/types/User";
 
 export default function MemberSidebar({users, toggleMemberSidebar = () => { }} : {users: (User|null)[], toggleMemberSidebar?: Function}){
     const h1 = "text-2xl";

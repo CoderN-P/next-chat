@@ -1,5 +1,5 @@
-import {db} from '@/db/connect';
-import Message from '@/types/Message';
+import {db} from '../connect';
+import {Message} from '../types/Message';
 
 async function readMessage(id: string, chatId: string) {
     const chats = db.collection('chats');
@@ -7,4 +7,4 @@ async function readMessage(id: string, chatId: string) {
     return Message.convertFromJSON(res);
 }
 
-export default readMessage;
+export {readMessage};

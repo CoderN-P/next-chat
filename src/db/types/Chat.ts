@@ -1,5 +1,5 @@
-import generateSnowflake from '@/db/utils/snowflake';
-import Message from './Message';
+import {generateSnowflake} from '../utils/snowflake';
+import {Message} from './Message';
 
 class Chat {
     _id: string;
@@ -34,4 +34,4 @@ class Chat {
 
 }
 
-export default Chat;
+export {Chat};

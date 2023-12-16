@@ -1,4 +1,4 @@
-import generateSnowflake from "@/db/utils/snowflake";
+import {generateSnowflake} from '../utils/snowflake';
 
 class User {
     _id: string;
@@ -52,4 +52,4 @@ class User {
 
 }
 
-export default User;
+export {User};
