@@ -1,7 +1,11 @@
 {
   "name": "db-utils",
   "version": "1.0.0",
-  "description": "Your module description",
+  "description": "DB Utils for next-chat",
+  "browser": {
+    "fs": false,
+    "child_process": false
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"

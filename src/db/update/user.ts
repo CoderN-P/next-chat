@@ -1,11 +1,12 @@
 import {db} from '../connect';
 const mongodb = require('mongodb');
 
-async function updateUser(id: string, update: { $push: { chats: any } }) {
+async function updateUser(id: string, update: any) {
     if (!id) throw new Error('No ID provided.');
     const users = db.collection('users');
     const objectId = mongodb.ObjectId.createFromHexString(id);
-    return await users.updateOne({_id: objectId}, {$set: update});
+
+    return await users.updateOne({_id: objectId}, {$push: update['$addToSet']});
 }
 
 export {updateUser};

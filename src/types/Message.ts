@@ -1,4 +1,4 @@
-import {generateSnowflake} from '../utils/snowflake';
+import {generateSnowflake} from '../db/utils/snowflake';
 
 class Message {
     _id: string;

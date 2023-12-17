@@ -1,5 +1,5 @@
 import {db} from '../connect';
-import {Chat} from '../types/Chat';
+import {Chat} from '../../types';
 const mongodb = require('mongodb');
 
 async function createChat(chat: Chat){

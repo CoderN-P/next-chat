@@ -1,9 +1,7 @@
 "use client";
 
 import ChatMessage from "@/app/components/message";
-import Chat from "@/db/types/Chat";
-import User from "@/db/types/User";
-import Message from "@/db/types/Message";
+import {Chat, User, Message} from "@/types";
 
 export default function ChatUI({chat=null, users, loadingMessages=false}: {chat?: Chat | null, users: (User|null)[], loadingMessages: boolean}){
     const messages = []
@@ -29,7 +27,11 @@ export default function ChatUI({chat=null, users, loadingMessages=false}: {chat?
                         )
                      : [...chat.messages].reverse().map(
                             (message: Message | null, index) => (
-                                <ChatMessage group={index < chat.messages.length-1 ? group(chat.messages[chat.messages.length-index-2].sendDate, chat.messages[chat.messages.length-index-1].sendDate) : false} key={index} message={message} author={users.find((user) => user?._id === message?.sender)}/>
+                                <ChatMessage
+                                    group={
+                                    (index < chat.messages.length-1 && chat.messages[chat.messages.length-index-2].sender === chat.messages[chat.messages.length-index-1].sender)
+                                        ? group(chat.messages[chat.messages.length-index-2].sendDate, chat.messages[chat.messages.length-index-1].sendDate)
+                                        : false} key={index} message={message} author={users.find((user) => user?._id === message?.sender)}/>
                             )
                     )
                 }</>

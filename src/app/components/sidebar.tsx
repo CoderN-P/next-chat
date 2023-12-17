@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import SidebarChat from './sidebarChat';
 import SidebarProfile from './sidebarProfile';
-import Chat from '@/db/types/Chat';
-import User from '@/db/types/User';
+import {Chat, User} from '@/types';
+
 
 export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}, loadChat = () => {}, curChatID=null} : {chats: (Chat|null)[], user?: User|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function, loadChat?: Function, curChatID?: string|null}){
 

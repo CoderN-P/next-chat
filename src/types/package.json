@@ -1,0 +1,15 @@
+{
+  "name": "db-types",
+  "version": "1.0.0",
+  "description": "DB Types for next-chat",
+  "main": "dist/types/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  }
+}

@@ -1,5 +1,5 @@
 import {db} from '../connect';
-import {User} from '../types/User';
+import {User} from '../../types';
 
 const mongodb = require('mongodb');
 

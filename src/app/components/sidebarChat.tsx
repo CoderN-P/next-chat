@@ -1,7 +1,7 @@
 'use client';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import Chat from "@/db/types/Chat";
+import {Chat} from "@/types";
 
 export default function SidebarChat({ chat=null, active= false , expanded= false} : {chat: Chat | null, active: boolean, expanded?: boolean}){
     let className = "border p-2 dark:border-neutral-800 mb-2 flex flex-row w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 h-16 bg-neutral-300 dark:bg-neutral-900 rounded-md shadow";

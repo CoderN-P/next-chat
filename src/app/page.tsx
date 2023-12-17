@@ -5,9 +5,10 @@ import Sidebar from "@/app/components/sidebar";
 import MessageBox from "@/app/components/messageBox";
 import ChatHeader from "@/app/components/chatHeader";
 import {useEffect, useState} from "react";
+
 import MemberSidebar from "@/app/components/memberSidebar";
 import ChatUI from "@/app/components/chat";
-import {Chat, User, Message} from "@/db";
+import {Chat, User, Message} from "@/types";
 
 import {useSession} from "next-auth/react";
 import getUser from "@/app/actions/getUser";
@@ -33,15 +34,11 @@ export default function Home() {
     const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
     // Get current user
     const {data: session, status} = useSession();
-    /*
-    var socket: any;
-    socket = io("http://localhost:3001");
 
-    if (currentChat){
-        socket.emit("join", currentChat._id);
-    }
+    var socket = io("http://localhost:3001");
 
-    */
+
+
     let initialState = [];
     if (user){
         for (let i = 0; i < user.chats.length; i++){
@@ -55,6 +52,14 @@ export default function Home() {
     }
     const [chats, setChats] = useState<(Chat|null)[]>(initialState);
 
+    if (chats){
+        for (let i = 0; i < chats.length; i++){
+            if (chats[i] == null){
+                continue;
+            }
+            socket.emit("join", chats[i]._id);
+        }
+    }
     if (session && session.user && !user){
         getUser("", session.user.email).then((data: string | null) => {
             if (data == null) {
@@ -81,24 +86,50 @@ export default function Home() {
             return;
         }
         if (mode == "name") {
-            createChatAction(JSON.stringify({
+            setLoadingShareCode(true);
+            socket.emit("new_chat", {
                 name: name,
                 users: [user._id],
-                avatar: user["image"]
-            })).then((data: string) => {
-                setLoadingShareCode(false);
-                data = JSON.parse(data);
-                const newChat = Chat.convertFromJSON(data);
-                setShareCode(newChat._id);
-                const newChats = [newChat, ...chats];
-                setChats(newChats);
-
+                avatar: user.image,
             });
         } else {
-            // TODO: Add share code support
+            setLoadingShareCode(true);
+            socket.emit("join_chat", {
+                chatID: name,
+                userID: user._id,
+            });
             return;
         }
     }
+    socket.on("new_chat", (chat) => {
+        console.log(chat);
+        let shared = !chat.new;
+        const chatData = chat.chat;
+        const newChat = Chat.convertFromJSON(chatData);
+        setLoadingShareCode(false);
+        if (!shared){
+            setShareCode(newChat._id);
+            setCurrentChatMembers([user]);
+        }
+        setChats((chats) => {
+            let newChats = [...chats];
+            newChats.push(newChat);
+            return newChats;
+        });
+        setCurrentChat(newChat);
+    });
+
+    socket.on("new_user", (data) => {
+        if (data.chatID != currentChat?._id){
+            return;
+        }
+        setCurrentChatMembers((members) => {
+            let newMembers = [...members];
+            newMembers.push(User.convertFromJSON(data.user));
+            return newMembers;
+        });
+    });
+
     function sendMessage(message: string){
         const messageData = {
             content: message,
@@ -119,17 +150,35 @@ export default function Home() {
             return curChat;
         });
 
-        // socket.emit("message", messageData);
+        const socketMessage = {
+            chatID: currentChat?._id,
+            message: messageData,
+        }
+
+        socket.emit("message", socketMessage);
     }
-    /*
-    socket.on("message", (message: string) => {
-        const messageData = JSON.parse(message);
-        if (messageData["chatID"] != currentChat?._id){
+
+    socket.on("new_message", (message) => {
+        console.log(message);
+        if (message.chatID != currentChat?._id){
             return;
         }
-        currentChat?.messages.push(Message.convertFromJSON(messageData));
+
+        setCurrentChat((curChat) => {
+            if (curChat) {
+                return Chat.convertFromJSON({
+                        "_id": curChat._id,
+                        "name": curChat.name,
+                        "avatar": curChat.avatar,
+                        "users": curChat.users,
+                        "messages": curChat.messages.concat([Message.convertFromJSON(message.message)])
+                    }
+                );
+            }
+            return curChat;
+        });
     });
-    */
+
 
     // Get current user
 

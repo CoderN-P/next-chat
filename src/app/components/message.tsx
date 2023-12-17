@@ -1,6 +1,5 @@
 "use client";
-import  Message from "@/db/types/Message";
-import User from "@/db/types/User";
+import {Message, User} from "@/types";
 import getTimeString from "@/app/utils/getTimeString";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';

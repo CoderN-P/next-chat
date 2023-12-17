@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
-import User from "@/db/types/User";
+import {User} from "@/types";
 
 export default function SidebarProfile({user=null, expanded = false} : {user?: User|null, expanded?: boolean}){
     let className = "absolute border-t justify-center lg:justify-start dark:border-neutral-800 bottom-0 p-4 left-0 flex flex-row w-24 lg:w-64 hover:bg-neutral-300 dark:hover:bg-neutral-800 h-20 bg-neutral-200 dark:bg-neutral-900 shadow";

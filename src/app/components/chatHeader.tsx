@@ -1,6 +1,6 @@
 "use client";
 import {Bars3Icon, PencilIcon, UsersIcon} from "@heroicons/react/20/solid";
-import Chat from "@/db/types/Chat";
+import {Chat} from "@/types";
 
 export default function ChatHeader({chat, toggleSidebar, toggleMemberSidebar} : {chat: Chat | null, toggleSidebar: Function, toggleMemberSidebar: Function}){
     return (

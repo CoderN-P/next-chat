@@ -1,5 +1,6 @@
 'use server';
-import {readUser, db, Chat} from '@/db';
+import {readUser, db} from '@/db';
+import {Chat} from '@/types';
 
 async function getChats(id: string) {
     const user = await readUser(id);

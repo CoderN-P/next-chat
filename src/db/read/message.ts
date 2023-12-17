@@ -1,5 +1,5 @@
 import {db} from '../connect';
-import {Message} from '../types/Message';
+import {Message} from '../../types';
 
 async function readMessage(id: string, chatId: string) {
     const chats = db.collection('chats');
