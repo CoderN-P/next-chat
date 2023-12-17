@@ -15,14 +15,15 @@ const io = new Server(httpServer, {
 
 
 io.on('connection', (socket) => {
-    io.on('join', (room) => {
+    socket.on('join', (room) => {
         socket.join(room);
     });
 
     socket.on('message', (message) => {
         const newMessage = Message.convertFromJSON(message.message);
+        console.log(newMessage);
         createMessage(newMessage, message.chatID).then(() => {
-            io.to(message.chatID).emit('new_message', message);
+            socket.to(message.chatID).emit('new_message', message, {except: socket.id});
         });
     });
 
@@ -56,7 +57,7 @@ io.on('connection', (socket) => {
             await updateChat(chatID, updateChatParams);
             socket.join(chatID);
             const user = await readUser(userID);
-            socket.broadcast.to(chatID).emit('new_user', {chatID: chatID, user: user});
+            socket.to(chatID).emit('new_user', {chatID: chatID, user: user}, {except: socket.id});
             const socketChat = {
                 new: false,
                 chat: chat,

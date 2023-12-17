@@ -2,10 +2,18 @@ import {User} from '@/types';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-export default function ChatMember({user=null}:{user: User|null}){
+export default function ChatMember({user=null, showKick}:{user: User|null, showKick: boolean|null}){
     return (
-        <div className="flex flex-row mb-2 rounded-md border dark:border-neutral-800 dark:bg-neutral-900 items-center dark:hover:bg-neutral-800">
-
+        <div className="flex relative group flex-row mb-2 rounded-md border dark:border-neutral-800 dark:bg-neutral-900 items-center dark:hover:bg-neutral-800">
+            {showKick ?
+                <>
+            <div className="absolute top-0 p-2 right-0 text-red-600  hidden dark:hover:text-red-500 group-hover:block">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className=" w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            </>
+                    : null}
             <div className=" w-16 h-16 p-2 mr-1 rounded-l-md items-center">
                 <div className="relative">
                     { user ?

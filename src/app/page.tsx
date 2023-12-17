@@ -4,7 +4,7 @@ import '@/app/globals.css';
 import Sidebar from "@/app/components/sidebar";
 import MessageBox from "@/app/components/messageBox";
 import ChatHeader from "@/app/components/chatHeader";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 import MemberSidebar from "@/app/components/memberSidebar";
 import ChatUI from "@/app/components/chat";
@@ -13,7 +13,6 @@ import {Chat, User, Message} from "@/types";
 import {useSession} from "next-auth/react";
 import getUser from "@/app/actions/getUser";
 import CreateChatUI from "@/app/components/createChatUI";
-import createChatAction from "@/app/actions/createChat";
 import getChats from "@/app/actions/getChats";
 import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
@@ -37,8 +36,6 @@ export default function Home() {
 
     var socket = io("http://localhost:3001");
 
-
-
     let initialState = [];
     if (user){
         for (let i = 0; i < user.chats.length; i++){
@@ -51,12 +48,13 @@ export default function Home() {
         }
     }
     const [chats, setChats] = useState<(Chat|null)[]>(initialState);
+    const [joinedRooms, setJoinedRooms] = useState<boolean>(false);
 
-
-    for (let i = 0; i < chats.length; i++){
-        if (chats[i]){
+    if (!joinedRooms && !chats.includes(null)) {
+        for (let i = 0; i < chats.length; i++) {
             socket.emit("join", chats[i]._id);
         }
+        setJoinedRooms(true);
     }
 
     if (session && session.user && !user){
@@ -74,6 +72,7 @@ export default function Home() {
             let newData = [];
             for (let i = 0; i < data.length; i++){
                 newData[i] = Chat.convertFromJSON(data[i]);
+                console.log(newData[i]);
             }
             setChats(newData);
         });
@@ -90,6 +89,7 @@ export default function Home() {
                 name: name,
                 users: [user._id],
                 avatar: user.image,
+                owner: user._id,
             });
         } else {
             setLoadingShareCode(true);
@@ -101,7 +101,6 @@ export default function Home() {
         }
     }
     socket.on("new_chat", (chat) => {
-        console.log(chat);
         let shared = !chat.new;
         const chatData = chat.chat;
         const newChat = Chat.convertFromJSON(chatData);
@@ -113,19 +112,36 @@ export default function Home() {
         setChats((chats) => {
             let newChats = [...chats];
             newChats.push(newChat);
+            getChatMembers(newChat._id).then((data: string) => {
+                const jsonData = JSON.parse(data);
+                setCurrentChatMembers(
+                    jsonData.map(
+                        (user: Map<string, any>) => (
+                            User.convertFromJSON(user)
+                        )
+                    )
+                );
+                }
+            );
             return newChats;
         });
         setCurrentChat(newChat);
     });
 
     socket.on("new_user", (data) => {
-        if (data.chatID != currentChat?._id){
-            return;
-        }
-        setCurrentChatMembers((members) => {
-            let newMembers = [...members];
-            newMembers.push(User.convertFromJSON(data.user));
-            return newMembers;
+        setCurrentChat((curChat) => {
+            if (curChat && curChat._id == data.chatID) {
+                setCurrentChatMembers((members) => {
+                    // TODO: Find a better way to do this instead of ignoring the error
+                    if (members.includes(User.convertFromJSON(data.user))){
+                        return members;
+                    }
+                    let newMembers = [...members];
+                    newMembers.push(User.convertFromJSON(data.user));
+                    return newMembers;
+                });
+            }
+            return curChat;
         });
     });
 
@@ -158,13 +174,15 @@ export default function Home() {
     }
 
     socket.on("new_message", (message) => {
-        console.log(message);
-        if (message.chatID != currentChat?._id){
-            return;
-        }
-
         setCurrentChat((curChat) => {
             if (curChat) {
+                if (curChat._id != message.chatID){
+                    return curChat;
+                }
+
+                if (message.message.sender == user?._id){
+                    return curChat;
+                }
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
                         "name": curChat.name,
@@ -262,6 +280,8 @@ export default function Home() {
         setMemberExpanded(!memberExpanded);
     }
 
+
+
     //createUserServer(new User({username: "test", email: "test@test.com", password: "test"})).then(r => console.log(r));
   return (
     <main className="h-screen w-screen">
@@ -273,7 +293,7 @@ export default function Home() {
         </div>
 
 
-        { memberExpanded ? <MemberSidebar users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
+        { memberExpanded ? <MemberSidebar chatID={currentChat?._id} owner={currentChat?.owner == user?._id} users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
 
         <div className="flex flex-row h-full w-full">
         <div className={chatSidebarClass}>
@@ -281,7 +301,7 @@ export default function Home() {
         </div>
 
         <div className={className}>
-            <ChatHeader chat={currentChat} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
+            <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
             <ChatUI chat={currentChat} loadingMessages={loadingMessages} users={currentChatMembers}/>
             <MessageBox sendMessage={sendMessage}/>
         </div>

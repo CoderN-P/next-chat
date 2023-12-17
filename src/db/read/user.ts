@@ -8,11 +8,17 @@ async function readUser(id: string|null=null, email: string|null=null, username:
     const users = db.collection('users');
     if (id) {
         const objectId = mongodb.ObjectId.createFromHexString(id);
-        return User.convertFromJSON(await users.findOne({_id: objectId}));
+        const res = await users.findOne({_id: objectId});
+        if (!res) return null;
+        return User.convertFromJSON(res);
     } else if (email) {
-        return User.convertFromJSON(await users.findOne({email: email}));
+        const res = await users.findOne({email: email});
+        if (!res) return null;
+        return User.convertFromJSON(res);
     } else {
-        return User.convertFromJSON(await users.findOne({username: username}))
+        const res = await users.findOne({username: username});
+        if (!res) return null;
+        return User.convertFromJSON(res);
     }
 }
 
