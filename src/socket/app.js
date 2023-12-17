@@ -3,7 +3,6 @@ const { Server } = require('socket.io');
 const http = require('http');
 const { readChat, createMessage, createChat, updateUser, updateChat, readUser, db } = require('../db');
 const {Message, Chat} = require('../types');
-const { ObjectId } = require('mongodb');
 const server = express();
 const httpServer = http.createServer(server);
 
@@ -43,8 +42,8 @@ io.on('connection', (socket) => {
         const userID = data.userID;
         const chat = await readChat(chatID);
         if (chat) {
-            if (userID in chat.users) {
-                socket.emit('error', 'User already in chat');
+            if (chat.users.includes(userID)) {
+                socket.emit('create_chat_error', {"error": 'User already in chat'});
                 return;
             }
             const updateUserParams = {
@@ -53,10 +52,8 @@ io.on('connection', (socket) => {
             const updateChatParams = {
                 $addToSet: {users: userID},
             }
-            const userCollection = db.collection('users');
-            const chatCollection = db.collection('chats');
-            await userCollection.updateOne({_id: ObjectId.createFromHexString(userID)}, updateUserParams);
-            await chatCollection.updateOne({_id: chatID}, updateChatParams);
+            await updateUser(userID, updateUserParams);
+            await updateChat(chatID, updateChatParams);
             socket.join(chatID);
             const user = await readUser(userID);
             socket.broadcast.to(chatID).emit('new_user', {chatID: chatID, user: user});
@@ -66,7 +63,7 @@ io.on('connection', (socket) => {
             }
             socket.emit('new_chat', socketChat);
         } else {
-            socket.emit('error', 'Chat not found');
+            socket.emit('create_chat_error', {"error": "Chat not found"});
         }
     })
 });

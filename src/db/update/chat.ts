@@ -4,7 +4,7 @@ import {db} from '../connect';
 async function updateChat(id: string, update: any) {
     if (!id) throw new Error('No ID provided.')
     const chats = db.collection('chats')
-    return await chats.updateOne({_id: id}, {$push: update['$addToSet']});
+    return await chats.updateOne({_id: id}, update);
 }
 
 export {updateChat};

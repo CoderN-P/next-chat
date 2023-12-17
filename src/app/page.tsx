@@ -52,14 +52,13 @@ export default function Home() {
     }
     const [chats, setChats] = useState<(Chat|null)[]>(initialState);
 
-    if (chats){
-        for (let i = 0; i < chats.length; i++){
-            if (chats[i] == null){
-                continue;
-            }
+
+    for (let i = 0; i < chats.length; i++){
+        if (chats[i]){
             socket.emit("join", chats[i]._id);
         }
     }
+
     if (session && session.user && !user){
         getUser("", session.user.email).then((data: string | null) => {
             if (data == null) {
@@ -178,6 +177,25 @@ export default function Home() {
             return curChat;
         });
     });
+    let [currentMode, setCurrentMode] = useState<"name" | "code">("name");
+    const [createChatError, setCreateChatError] = useState<string | null>(null);
+
+    socket.on("create_chat_error", (error) => {
+        setCreateChatError(error.error);
+        setLoadingShareCode(false);
+    });
+
+    function toggleMode(){
+        setLoadingShareCode(false);
+        setShareCode(null);
+        setCreateChatError(null);
+
+        if (currentMode == "name"){
+            setCurrentMode("code");
+        } else {
+            setCurrentMode("name");
+        }
+    }
 
 
     // Get current user
@@ -226,6 +244,7 @@ export default function Home() {
     function toggleCreateChatUI(){
         setLoadingShareCode(false);
         setShareCode(null);
+        setCreateChatError(null);
          setCreateChatUI(!createChatUI);
     }
 
@@ -247,7 +266,7 @@ export default function Home() {
   return (
     <main className="h-screen w-screen">
         { !session && status != "loading" ? <LoginModal/> : null}
-        { createChatUI ? <CreateChatUI createChatClient={createChatClient} shareCode={shareCode} submitting={loadingShareCode} toggleCreateChatUI={toggleCreateChatUI}/> : null }
+        { createChatUI ? <CreateChatUI toggleMode={toggleMode} currentMode={currentMode} error={createChatError} createChatClient={createChatClient} shareCode={shareCode} submitting={loadingShareCode} toggleCreateChatUI={toggleCreateChatUI}/> : null }
         <div className={(!session && status != "loading") || (createChatUI) ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
         <div className={chatSidebarClass}>
             { expanded ? <Sidebar curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }

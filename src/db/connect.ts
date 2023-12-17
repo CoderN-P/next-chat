@@ -9,8 +9,7 @@ const credentials = 'src/db/X509-cert-7229008834198183053.pem';
 // Create new MongoClient instance
 const client = new MongoClient(process.env.MONGOURI, {
   tlsCertificateKeyFile: credentials,
-  serverApi: ServerApiVersion.v1,
-  useNewUrlParser: true
+  serverApi: ServerApiVersion.v1
 });
 
 

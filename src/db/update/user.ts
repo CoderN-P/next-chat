@@ -6,7 +6,7 @@ async function updateUser(id: string, update: any) {
     const users = db.collection('users');
     const objectId = mongodb.ObjectId.createFromHexString(id);
 
-    return await users.updateOne({_id: objectId}, {$push: update['$addToSet']});
+    return await users.updateOne({_id: objectId}, update);
 }
 
 export {updateUser};
