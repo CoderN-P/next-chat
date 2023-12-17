@@ -23,7 +23,7 @@ export default function ChatMember({user=null, showKick}:{user: User|null, showK
                     <span className="bottom-0 z-10 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
                 </div>
             </div>
-            <div className="flex-1 truncate flex flex-col mr-2">
+            <div className="flex-1 truncate flex flex-col items-baseline mr-2">
                 <h1 className="text-md">{user? user.name : <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/>}</h1>
                 <h2 className="text-xs text-neutral-400">{user? (user.customStatus ? user.customStatus : user.email) : <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/>}
                 </h2>

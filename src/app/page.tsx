@@ -16,6 +16,7 @@ import CreateChatUI from "@/app/components/createChatUI";
 import getChats from "@/app/actions/getChats";
 import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
+import ProfileView from "@/app/components/profileView";
 import io from "socket.io-client";
 
 export default function Home() {
@@ -280,6 +281,18 @@ export default function Home() {
         setMemberExpanded(!memberExpanded);
     }
 
+    let [showProfile, setShowProfile] = useState<boolean>(false);
+    let [currentProfile, setCurrentProfile] = useState<User|null>(null);
+    function toggleProfile(user: User|null){
+        if (showProfile){
+            setCurrentProfile(null);
+        } else {
+            setCurrentProfile(user);
+
+        }
+        setShowProfile(!showProfile);
+    }
+
 
 
     //createUserServer(new User({username: "test", email: "test@test.com", password: "test"})).then(r => console.log(r));
@@ -291,10 +304,10 @@ export default function Home() {
         <div className={chatSidebarClass}>
             { expanded ? <Sidebar curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
         </div>
-
-
-        { memberExpanded ? <MemberSidebar chatID={currentChat?._id} owner={currentChat?.owner == user?._id} users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
-
+            { showProfile ? <ProfileView toggleProfile={toggleProfile} user={currentProfile} /> : null }
+        <div className={showProfile? "blur-sm" : ""}>
+        { memberExpanded ? <MemberSidebar toggleProfile={toggleProfile} userID={user?._id} chatID={currentChat?._id} owner={currentChat?.owner} users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
+       </div>
         <div className="flex flex-row h-full w-full">
         <div className={chatSidebarClass}>
             { !expanded ? <Sidebar curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
