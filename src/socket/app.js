@@ -2,7 +2,7 @@ const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
 const { readChat, createMessage, createChat, updateUser, updateChat, readUser, db } = require('../db');
-const {Message, Chat} = require('../types');
+const {Message, Chat, User} = require('../types');
 const server = express();
 const httpServer = http.createServer(server);
 
@@ -66,7 +66,25 @@ io.on('connection', (socket) => {
         } else {
             socket.emit('create_chat_error', {"error": "Chat not found"});
         }
-    })
+    });
+
+    socket.on('user_disconnect', async (data) => {
+        const updateUserParams = {
+            $set: {status: "offline"},
+        };
+
+        console.log(data);
+
+        await updateUser(data, updateUserParams);
+    });
+
+    socket.on('user_connect', async (data) => {
+        const updateUserParams = {
+            $set: {status: "online"},
+        };
+
+        await updateUser(data, updateUserParams);
+    });
 });
 
 

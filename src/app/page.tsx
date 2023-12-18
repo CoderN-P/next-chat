@@ -4,7 +4,7 @@ import '@/app/globals.css';
 import Sidebar from "@/app/components/sidebar";
 import MessageBox from "@/app/components/messageBox";
 import ChatHeader from "@/app/components/chatHeader";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import MemberSidebar from "@/app/components/memberSidebar";
 import ChatUI from "@/app/components/chat";
@@ -237,6 +237,7 @@ export default function Home() {
         if (!chat){
             return;
         }
+
         setLoadingMessages(true);
         loadMessages(chatID, currentMessageIDX, 50).then((data) => {
                 const jsonData = JSON.parse(data);
@@ -293,7 +294,33 @@ export default function Home() {
         setShowProfile(!showProfile);
     }
 
+    useEffect(() => {
+      const unloadCallback = (event: Event) => {
 
+        if (user) {
+            socket.emit("user_disconnect", user._id);
+        }
+        return "";
+      };
+
+      window.addEventListener("beforeunload", unloadCallback);
+      return () => window.removeEventListener("beforeunload", unloadCallback);
+    }, [socket, user]);
+
+    let [alreadyOnline, setAlreadyOnline] = useState<boolean>(false);
+
+    if (user && !alreadyOnline){
+        socket.emit("user_connect", user._id);
+        user.status = "online";
+        if (currentChatMembers[0]){
+            for (let i = 0; i < currentChatMembers.length; i++){
+                if (currentChatMembers[i]?._id == user._id){
+                    currentChatMembers[i].status = "online";
+                }
+            }
+        }
+        setAlreadyOnline(true);
+    }
 
     //createUserServer(new User({username: "test", email: "test@test.com", password: "test"})).then(r => console.log(r));
   return (

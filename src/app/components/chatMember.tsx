@@ -3,6 +3,8 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function ChatMember({user=null, showKick}:{user: User|null, showKick: boolean|null}){
+    const statusColor = user?.status === "online" ? "bg-green-400" : "bg-red-400";
+    const statusClass = "bottom-0 z-10 left-9 absolute  w-4 h-4 border-2 border-white dark:border-gray-800 rounded-full " + statusColor;
     return (
         <div className="flex relative group flex-row mb-2 rounded-md border dark:border-neutral-800 dark:bg-neutral-900 items-center dark:hover:bg-neutral-800">
             {showKick ?
@@ -20,7 +22,7 @@ export default function ChatMember({user=null, showKick}:{user: User|null, showK
                         <img className="rounded-full h-12 w-12 " src={user.image} alt="Profile Picture"/>
                         : <Skeleton className="animate-pulse" circle={true} height={48} width={48} baseColor="#404040" highlightColor="#404040" />
                     }
-                    <span className="bottom-0 z-10 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+                    <span className={statusClass}></span>
                 </div>
             </div>
             <div className="flex-1 truncate flex flex-col items-baseline mr-2">

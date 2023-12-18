@@ -11,6 +11,8 @@ export default function SidebarProfile({user=null, expanded = false} : {user?: U
         className2 = " ml-4 flex flex-col h-full justify-center w-40 truncate";
     }
 
+    const statusColor = user?.status === "online" ? "bg-green-400" : "bg-red-400";
+    const statusClass = "bottom-0 left-9 absolute  w-4 h-4 border-2 border-white dark:border-gray-800 rounded-full " + statusColor;
     return (
     <div className={className}>
 
@@ -18,7 +20,7 @@ export default function SidebarProfile({user=null, expanded = false} : {user?: U
                 <div className="relative">
                     {!user ? <Skeleton circle={true} height={48} width={48} className="animate-pulse" baseColor="#404040" highlightColor="#404040" /> :
                         <><img className="rounded-full h-12 w-12" src={user.image} alt="Profile Picture"/><span
-                            className="bottom-0 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span></>
+                            className={statusClass}></span></>
                     }
                     </div>
             </div>

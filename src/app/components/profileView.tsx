@@ -1,6 +1,8 @@
 import {User} from "@/types";
 
 export default function ProfileView({user, toggleProfile}:{user: User|null, toggleProfile: Function}){
+    const statusColor = user?.status === "online" ? "bg-green-400" : "bg-red-400";
+    const statusClass = "bottom-0 z-10 left-9 absolute  w-4 h-4 border-2 border-white dark:border-gray-800 rounded-full " + statusColor;
     return (
         <div className="absolute flex flex-col z-50 w-72 h-72 top-1/2 left-1/2 transform translate-x-[-50%] translate-y-[-50%] rounded-md border dark:border-neutral-800  items-center shadow ">
             <div className="absolute top-0 right-0 p-2 ">
@@ -15,7 +17,7 @@ export default function ProfileView({user, toggleProfile}:{user: User|null, togg
                         <img className="rounded-full h-12 w-12 " src={user.image} alt="Profile Picture"/>
                         : null
                     }
-                    <span className="bottom-0 z-10 left-9 absolute  w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+                    <span className={statusClass}></span>
                 </div>
             </div>
             <div className="flex-1 truncate flex flex-col mr-2">
