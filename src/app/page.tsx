@@ -53,6 +53,7 @@ export default function Home() {
 
     if (!joinedRooms && !chats.includes(null)) {
         for (let i = 0; i < chats.length; i++) {
+            // @ts-ignore
             socket.emit("join", chats[i]._id);
         }
         setJoinedRooms(true);
@@ -154,11 +155,13 @@ export default function Home() {
         }
         setCurrentChat((curChat) => {
             if (curChat) {
+                setCurrentMessageIDX(currentMessageIDX + 1);
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
                         "name": curChat.name,
                         "avatar": curChat.avatar,
                         "users": curChat.users,
+                        "owner": curChat.owner,
                         "messages": curChat.messages.concat([Message.convertFromJSON(messageData)])
                     }
                 );
@@ -184,10 +187,12 @@ export default function Home() {
                 if (message.message.sender == user?._id){
                     return curChat;
                 }
+                setCurrentMessageIDX(currentMessageIDX + 1);
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
                         "name": curChat.name,
                         "avatar": curChat.avatar,
+                        "owner": curChat.owner,
                         "users": curChat.users,
                         "messages": curChat.messages.concat([Message.convertFromJSON(message.message)])
                     }
@@ -237,9 +242,9 @@ export default function Home() {
         if (!chat){
             return;
         }
-
+        setCurrentMessageIDX(0);
         setLoadingMessages(true);
-        loadMessages(chatID, currentMessageIDX, 50).then((data) => {
+        loadMessages(chatID, 0, 50).then((data) => {
                 const jsonData = JSON.parse(data);
                 setCurrentMessageIDX(jsonData["newIDX"]);
                 chat.messages = jsonData["messages"];
@@ -312,17 +317,19 @@ export default function Home() {
     if (user && !alreadyOnline){
         socket.emit("user_connect", user._id);
         user.status = "online";
-        if (currentChatMembers[0]){
-            for (let i = 0; i < currentChatMembers.length; i++){
-                if (currentChatMembers[i]?._id == user._id){
-                    currentChatMembers[i].status = "online";
-                }
+        for (let i = 0; i < currentChatMembers.length; i++){
+            if (currentChatMembers[i] === null) {
+                break;
+            }
+            if (currentChatMembers[i]?._id == user._id){
+                // @ts-ignore
+                currentChatMembers[i].status = "online";
             }
         }
+
         setAlreadyOnline(true);
     }
 
-    //createUserServer(new User({username: "test", email: "test@test.com", password: "test"})).then(r => console.log(r));
   return (
     <main className="h-screen w-screen">
         { !session && status != "loading" ? <LoginModal/> : null}

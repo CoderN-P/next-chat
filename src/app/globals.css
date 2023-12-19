@@ -25,3 +25,48 @@ body {
   color: rgb(var(--foreground-rgb));
 }
 
+.emojiWrapper1 {
+    width: 1em;
+    height: 1em;
+   margin: 0.25em .05em 0.25em .1em;
+   vertical-align: -0.1em;
+}
+
+.emojiWrapper2 {
+    width: 2em;
+    height: 2em;
+   margin: 0.25em .05em 0.25em .1em;
+   vertical-align: -0.1em;
+}
+
+@layer base {
+    h4 {
+        @apply text-lg;
+    }
+    h3 {
+        @apply text-xl;
+    }
+    h2 {
+        @apply text-2xl;
+    }
+    h1 {
+        @apply text-3xl;
+    }
+    a {
+        @apply text-blue-500;
+    }
+    a:hover {
+        @apply text-blue-700;
+    }
+    code {
+        @apply bg-neutral-800 text-neutral-100;
+        @apply text-sm;
+        @apply p-0.5 rounded-sm;
+    }
+    code:hover {
+        @apply bg-neutral-700;
+    }
+    blockquote {
+        @apply border-l-4 border-neutral-500 pl-4;
+    }
+}

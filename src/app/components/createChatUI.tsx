@@ -37,7 +37,7 @@ export default function CreateChatUI({toggleCreateChatUI, submitting=false, shar
         <p className={error ? "text-red-600 flex flex-row dark:bg-neutral-950 p-2 rounded-md w-full mr-4" : "hidden"}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className=" w-8 h-8">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>  <code className="mt-1 ml-2 dark:text-neutral-300">{error}</code>
+            </svg>  <code className="mt-1 ml-2 dark:text-neutral-300 bg-transparent hover:bg-transparent">{error}</code>
 </p>
         <p className={shareCode ? "" : "hidden"}>Share Code  <code className="dark:bg-neutral-950 p-2 rounded-md mx-2">{shareCode}</code> </p>
     </div>
