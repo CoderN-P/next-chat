@@ -5,7 +5,7 @@ import SidebarProfile from './sidebarProfile';
 import {Chat, User} from '@/types';
 
 
-export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}, loadChat = () => {}, curChatID=null} : {chats: (Chat|null)[], user?: User|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function, loadChat?: Function, curChatID?: string|null}){
+export default function Sidebar({chats, user = null, expanded= false, toggleSidebar=()=>{}, toggleCreateChatUI= () => {}, loadChat = () => {}, curChatID=null, notifications} : {chats: (Chat|null)[], user?: User|null, expanded?: boolean, toggleSidebar?: Function, toggleCreateChatUI?: Function, loadChat?: Function, curChatID?: string|null, notifications: Map<string, number>}){
 
     let h1 = "text-2xl hidden lg:block";
     let aside = "flex-0 hidden md:block top-0 left-0 z-40 w-24 lg:w-64 h-full transition-transform -translate-x-full sm:translate-x-0";
@@ -26,7 +26,7 @@ export default function Sidebar({chats, user = null, expanded= false, toggleSide
 
     return (
         <aside className={aside}>
-            <div className="flex flex-col pl-4 w-full h-[calc(100%-80px)] bg-white overflow-y-scroll border-r dark:bg-neutral-950 dark:border-neutral-800">
+            <div className="no-scrollbar flex flex-col px-4 w-full h-[calc(100%-80px)] bg-white overflow-y-scroll border-r dark:bg-neutral-950 dark:border-neutral-800">
                 <div className="flex flex-row my-4 justify-between items-center">
                     <h1 className={h1}><strong>Your Chats</strong></h1>
                     <button className={plusButton} onClick={() => toggleCreateChatUI()}>
@@ -44,7 +44,7 @@ export default function Sidebar({chats, user = null, expanded= false, toggleSide
                     chats.map(
                         (chat: Chat | null, index) => (
                             <button onClick={() => loadChat(chat?._id)} className="w-full" key={index}>
-                                <SidebarChat active={((chat?._id == curChatID) && curChatID) as boolean} chat={chat} expanded={expanded}/>
+                                <SidebarChat notifications={notifications.has(chat?._id as string) ? notifications.get(chat?._id as string) : 0} active={((chat?._id == curChatID) && curChatID) as boolean} chat={chat} expanded={expanded}/>
                             </button>
                         )
                     )

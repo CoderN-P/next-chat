@@ -28,7 +28,8 @@ body {
 .emojiWrapper1 {
     width: 1em;
     height: 1em;
-   margin: 0.25em .05em 0.25em .1em;
+   margin: 0.25em .05em .0em .0em;
+    display: inline-block;
    vertical-align: -0.1em;
 }
 
@@ -36,6 +37,7 @@ body {
     width: 2em;
     height: 2em;
    margin: 0.25em .05em 0.25em .1em;
+    display: inline-block;
    vertical-align: -0.1em;
 }
 
@@ -68,5 +70,16 @@ body {
     }
     blockquote {
         @apply border-l-4 border-neutral-500 pl-4;
+    }
+}
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
 }

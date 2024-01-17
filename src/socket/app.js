@@ -11,17 +11,18 @@ const io = new Server(httpServer, {
         origin: 'http://localhost:3000',
         methods: ['GET', 'POST'],
     }
-});
+});;
 
 
 io.on('connection', (socket) => {
     socket.on('join', (room) => {
+        console.log(`User joined room ${room}`)
         socket.join(room);
     });
 
     socket.on('message', (message) => {
         const newMessage = Message.convertFromJSON(message.message);
-        console.log(newMessage);
+        console.log(socket.rooms);
         createMessage(newMessage, message.chatID).then(() => {
             socket.to(message.chatID).emit('new_message', message, {except: socket.id});
         });

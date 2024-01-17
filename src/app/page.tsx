@@ -18,6 +18,8 @@ import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
 import ProfileView from "@/app/components/profileView";
 import io from "socket.io-client";
+import {getUrlMetadata} from "@/app/actions/getUrlMetadata";
+import {embed} from "@/types";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -53,8 +55,7 @@ export default function Home() {
 
     if (!joinedRooms && !chats.includes(null)) {
         for (let i = 0; i < chats.length; i++) {
-            // @ts-ignore
-            socket.emit("join", chats[i]._id);
+            socket.emit("join", chats[i]?._id);
         }
         setJoinedRooms(true);
     }
@@ -114,8 +115,8 @@ export default function Home() {
         setChats((chats) => {
             let newChats = [...chats];
             newChats.push(newChat);
-            getChatMembers(newChat._id).then((data: string) => {
-                const jsonData = JSON.parse(data);
+            getChatMembers(newChat._id).then((data) => {
+                const jsonData = JSON.parse(data as string);
                 setCurrentChatMembers(
                     jsonData.map(
                         (user: Map<string, any>) => (
@@ -147,6 +148,7 @@ export default function Home() {
         });
     });
 
+
     function sendMessage(message: string){
         const messageData = {
             content: message,
@@ -156,13 +158,15 @@ export default function Home() {
         setCurrentChat((curChat) => {
             if (curChat) {
                 setCurrentMessageIDX(currentMessageIDX + 1);
+                const messageObj: Message = Message.convertFromJSON(messageData);
+        
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
                         "name": curChat.name,
                         "avatar": curChat.avatar,
                         "users": curChat.users,
                         "owner": curChat.owner,
-                        "messages": curChat.messages.concat([Message.convertFromJSON(messageData)])
+                        "messages": curChat.messages.concat([messageObj])
                     }
                 );
             }
@@ -174,19 +178,73 @@ export default function Home() {
             message: messageData,
         }
 
+
+        setCurNotifications(0);
         socket.emit("message", socketMessage);
     }
+
+    let [notifications, setNotifications] = useState<Map<string, number>>(new Map<string, number>());
+
+    if (!chats.includes(null)){
+        for (let i = 0; i < chats.length; i++){
+            if (!chats[i]){
+                break;
+            }
+            if (notifications.has(chats[i]?._id as string)){
+                continue;
+            }
+            notifications.set(chats[i]?._id as string, 0);
+        }
+    }
+
+    useEffect(() => {
+        if (!("Notification" in window)) {
+          console.log("Browser does not support desktop notification");
+        } else {
+          Notification.requestPermission();
+        }
+    }, []);
+
+
 
     socket.on("new_message", (message) => {
         setCurrentChat((curChat) => {
             if (curChat) {
-                if (curChat._id != message.chatID){
+                if (curChat._id != message.chatID) {
+                    setChats((chats) => {
+                        if (chats[0]?._id == message.chatID) {
+                            return chats;
+                        }
+                        let chat = chats.find((chat) => chat?._id == message.chatID);
+                        new Notification(chat?.name as string, {image: chat?.avatar as string, body: message.message.content, icon: chat?.avatar as string});
+                        if (!chat) {
+                            return chats;
+                        }
+                        let chatsCopy = [...chats];
+                        chatsCopy.splice(chats.indexOf(chat), 1);
+                        return [chat, ...chatsCopy];
+                    });
+
+                    setNotifications((notifications) => {
+                        let newNotifications = new Map<string, number>(notifications);
+                        let currentNotifications = newNotifications.get(message.chatID);
+                        if (!currentNotifications) {
+                            currentNotifications = 0;
+                        }
+
+                        console.log(currentNotifications, message.chatID);
+                        notifications.set(message.chatID, currentNotifications + 1);
+
+                        return notifications;
+                    });
+
                     return curChat;
                 }
 
-                if (message.message.sender == user?._id){
+                if (message.message.sender == user?._id) {
                     return curChat;
                 }
+                setCurNotifications(0);
                 setCurrentMessageIDX(currentMessageIDX + 1);
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
@@ -201,6 +259,8 @@ export default function Home() {
             return curChat;
         });
     });
+
+
     let [currentMode, setCurrentMode] = useState<"name" | "code">("name");
     const [createChatError, setCreateChatError] = useState<string | null>(null);
 
@@ -237,24 +297,33 @@ export default function Home() {
         setExpanded(!expanded);
     }
 
+    let [curNotifications, setCurNotifications] = useState(0);
+
     function loadChat(chatID: string){
         const chat = chats.find((chat) => chat?._id == chatID);
         if (!chat){
             return;
         }
+        setNotifications((notifications) => {
+            let newNotifications = new Map<string, number>(notifications);
+            setCurNotifications(notifications.get(chatID) as number);
+            newNotifications.set(chatID, 0);
+            return newNotifications;
+        });
         setCurrentMessageIDX(0);
         setLoadingMessages(true);
         loadMessages(chatID, 0, 50).then((data) => {
                 const jsonData = JSON.parse(data);
                 setCurrentMessageIDX(jsonData["newIDX"]);
                 chat.messages = jsonData["messages"];
-                console.log(chat.messages);
                 setCurrentChat(chat);
+                
                 setLoadingMessages(false);
             }
         );
-        getChatMembers(chatID).then((data: string) => {
-            const jsonData = JSON.parse(data);
+
+        getChatMembers(chatID).then((data) => {
+            const jsonData = JSON.parse(data as string);
             setCurrentChatMembers(
                 jsonData.map(
                     (user: Map<string, any>) => (
@@ -330,13 +399,18 @@ export default function Home() {
         setAlreadyOnline(true);
     }
 
+
+
+
+
+
   return (
     <main className="h-screen w-screen">
         { !session && status != "loading" ? <LoginModal/> : null}
         { createChatUI ? <CreateChatUI toggleMode={toggleMode} currentMode={currentMode} error={createChatError} createChatClient={createChatClient} shareCode={shareCode} submitting={loadingShareCode} toggleCreateChatUI={toggleCreateChatUI}/> : null }
         <div className={(!session && status != "loading") || (createChatUI) ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
         <div className={chatSidebarClass}>
-            { expanded ? <Sidebar curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
+            { expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
         </div>
             { showProfile ? <ProfileView toggleProfile={toggleProfile} user={currentProfile} /> : null }
         <div className={showProfile? "blur-sm" : ""}>
@@ -344,12 +418,12 @@ export default function Home() {
        </div>
         <div className="flex flex-row h-full w-full">
         <div className={chatSidebarClass}>
-            { !expanded ? <Sidebar curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
+            { !expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
         </div>
 
         <div className={className}>
             <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
-            <ChatUI chat={currentChat} loadingMessages={loadingMessages} users={currentChatMembers}/>
+            <ChatUI chat={currentChat} notifications={curNotifications} loadingMessages={loadingMessages} users={currentChatMembers}/>
             <MessageBox sendMessage={sendMessage}/>
         </div>
         </div>
@@ -357,4 +431,8 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+
 
