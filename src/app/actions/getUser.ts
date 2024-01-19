@@ -6,7 +6,7 @@ async function getUser(id?: string | null | undefined, email?: string | null | u
     if (email) {
         return JSON.stringify(await readUser("", email));
     }
-    if (username) return JSON.stringify((await readUser("", "", username)).convertToJSON());
+    if (username) return JSON.stringify((await readUser("", "", username)));
     return null;
 }
 

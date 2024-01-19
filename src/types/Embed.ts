@@ -6,4 +6,4 @@ interface embed {
     image: string,
 }
 
-export {embed};
+export type {embed};

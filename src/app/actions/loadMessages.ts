@@ -6,6 +6,9 @@ async function loadMessages(chatId: string, idx: number, limit: number) {
     // limit is the number of messages to load
     // chatId is the id of the chat to load messages from
     const chat = await readChat(chatId);
+    if (chat == null) {
+        return JSON.stringify({messages: [], newIDX: 0});
+    }
     const messages = chat.messages;
     const length = messages.length;
     idx = length - idx - 1;

@@ -23,7 +23,7 @@ export default function ChatUI({chat=null, users, loadingMessages=false, notific
                 <>{ loadingMessages ?
                     messages.map(
                             (message, index) => (
-                                <ChatMessage key={index}/>
+                                <ChatMessage newMessage={false} key={index}/>
                             )
                         )
                      : [...chat.messages].reverse().map(

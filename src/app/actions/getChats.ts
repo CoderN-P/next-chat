@@ -4,6 +4,7 @@ import {Chat} from '@/types';
 
 async function getChats(id: string) {
     const user = await readUser(id);
+    if (!user) return null;
     const chats = user.chats;
     const chatObjects : Chat[] = [];
     const projection = {

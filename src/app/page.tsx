@@ -70,8 +70,14 @@ export default function Home() {
     }
 
     if (user && chats.includes(null)) {
-        getChats(user._id).then((data: string) => {
+        getChats(user._id).then((data) => {
+            if (data == null) {
+                return;
+            }
             data = JSON.parse(data);
+            if (data == null){
+                return;
+            }
             let newData = [];
             for (let i = 0; i < data.length; i++){
                 newData[i] = Chat.convertFromJSON(data[i]);
