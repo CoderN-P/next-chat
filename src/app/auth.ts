@@ -4,8 +4,8 @@ import {client, db} from '@/db';
 import Google from "next-auth/providers/google";
 
 
-
 export const authOptions: NextAuthOptions = {
+    // @ts-ignore
     adapter: MongoDBAdapter(client.connect(), {
         databaseName: 'NextChat',
     }),

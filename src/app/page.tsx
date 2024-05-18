@@ -221,6 +221,7 @@ export default function Home() {
                             return chats;
                         }
                         let chat = chats.find((chat) => chat?._id == message.chatID);
+                        // @ts-ignore
                         new Notification(chat?.name as string, {image: chat?.avatar as string, body: message.message.content, icon: chat?.avatar as string});
                         if (!chat) {
                             return chats;
