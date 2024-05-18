@@ -4,11 +4,11 @@ import '@/app/globals.css';
 import Sidebar from "@/app/components/sidebar";
 import MessageBox from "@/app/components/messageBox";
 import ChatHeader from "@/app/components/chatHeader";
-import {useEffect, useState} from "react";
-
+import {useEffect, useMemo, useRef, useState} from "react";
+import Embed from "@/app/components/Embed";
 import MemberSidebar from "@/app/components/memberSidebar";
 import ChatUI from "@/app/components/chat";
-import {Chat, User, Message} from "@/types";
+import {Chat, Message, User} from "@/types";
 
 import {useSession} from "next-auth/react";
 import getUser from "@/app/actions/getUser";
@@ -18,8 +18,6 @@ import loadMessages from "@/app/actions/loadMessages";
 import getChatMembers from "@/app/actions/getChatMembers";
 import ProfileView from "@/app/components/profileView";
 import io from "socket.io-client";
-import {getUrlMetadata} from "@/app/actions/getUrlMetadata";
-import {embed} from "@/types";
 
 export default function Home() {
     let [expanded, setExpanded] = useState(false);
@@ -409,8 +407,32 @@ export default function Home() {
     }
 
 
+    const embedsRef = useRef({});
 
+    const embeds = useMemo(() => {
+        if (!currentChat) {
+            return [];
+        }
+        return currentChat.messages.map((message) => {
+            // Extract URLs and memoize embeds
+            const regexString = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
+            const regex = new RegExp(regexString);
+            const urls = regex.exec(message.content);
 
+            if (!urls){
+                return null;
+            }
+            return urls.map((url) => {
+                // @ts-ignore
+                if (!embedsRef.current[url]) {
+                    // @ts-ignore
+                    embedsRef.current[url] = <Embed key={url} url={url}/>;
+                }
+                // @ts-ignore
+                return embedsRef.current[url];
+            });
+        });
+    }, [currentChat]);
 
 
     return (
@@ -432,7 +454,7 @@ export default function Home() {
 
                     <div className={className}>
                         <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
-                        <ChatUI chat={currentChat} notifications={curNotifications} loadingMessages={loadingMessages} users={currentChatMembers}/>
+                        <ChatUI embeds={embeds} setLoadingMessages={setLoadingMessages} setCurrentChat={setCurrentChat} chat={currentChat} setCurrentMessageIDX={setCurrentMessageIDX} notifications={curNotifications} currentMessageIDX={currentMessageIDX} loadingMessages={loadingMessages} users={currentChatMembers}/>
                         <MessageBox sendMessage={sendMessage}/>
                     </div>
                 </div>

@@ -20,6 +20,7 @@
     "@material-tailwind/react": "^2.1.9",
     "dompurify": "^3.1.3",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "html-react-parser": "^5.1.10",
     "marked": "^12.0.2",
     "next": "^14.2.3",

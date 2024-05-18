@@ -16,19 +16,29 @@ export default function MessageBox({sendMessage, chatName=null} : {sendMessage: 
         clearInput();
     }
 
+
     useEffect(() => {
             let fired = false;
+            let keys = new Set<string>();
             function handleKeydown(event: KeyboardEvent) {
-                if (event.key === 'Enter' && input && !fired) {
-                    fired = true;
-                    sendMessage(input);
-                    clearInput();
+                keys.add(event.key);
+                if (keys.has("Enter")) {
+                    if (keys.has("Shift")) {
+                        setInput(input + "\n");
+                        return;
+                    }
+                    if (!fired && input) {
+                        fired = true;
+                        sendMessage(input);
+                        clearInput();
+                    }
                 }
             }
 
             window.addEventListener('keydown', handleKeydown);
             window.addEventListener('keyup', (e) => {
                 fired = false;
+                keys.delete(e.key);
             });
             return () => {
                 window.removeEventListener('keydown', handleKeydown);

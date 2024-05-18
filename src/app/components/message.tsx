@@ -8,44 +8,14 @@ import DOMPurify from "dompurify";
 import { checkText } from 'smile2emoji'
 import * as twemoji from "twemoji";
 const marked = require("marked");
-import {useEffect, useMemo, useState} from "react";
-import urlMetadata from 'url-metadata';
 import '@/app/globals.css';
-import {embed} from "@/types";
 
 
-export default function ChatMessage({message=null, author=null, group=false, newMessage} : {message?: Message|null, author?: User|null, group?: boolean, newMessage: boolean}){
+
+export default function ChatMessage({message=null, author=null, group=false, newMessage, embeds} : {message?: Message|null, author?: User|null, group?: boolean, newMessage: boolean, embeds: any[]}){
     let updatedMessageContent = "";
     let sanitizedHtml = `<div class="w-full"></div>`;
-    const regexString = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
-    const regex = new RegExp(regexString);
-    let [embeds, setEmbeds] = useState<embed[]>([]);
 
-    useEffect(() => {
-        if (message && embeds.length == 0){
-            const urls = regex.exec(message.content);
-            if (!urls){
-                return;
-            }
-            Promise.all(urls.map(url => urlMetadata(url)))
-                .then(dataArray => {
-                    // dataArray is an array of the resolved values of all promises
-                    // Filter out any null values and map to the embed format
-
-                    const curEmbeds = dataArray.filter(data => data).map((data, index) => ({
-                        url: urls[index],
-                        title: data?.title as string,
-                        description: data ? (data?.description ? data.description : data['Description'] as string) : "",
-                        color: data ? data["theme-color"] as string : "#FFFFF",
-                        image: data ? data["og:image"] as string : "",
-                    } as embed));
-                    // Set the state with the new embeds
-
-                    setEmbeds(curEmbeds);
-                    console.log(curEmbeds, message.content);
-                });
-        }
-    }, [message]);
 
     if (message){
         updatedMessageContent = checkText(message.content);
@@ -78,17 +48,10 @@ export default function ChatMessage({message=null, author=null, group=false, new
                 <div className="flex-1 text-lg text-neutral-400 flex flex-col justify-items-start">
                     { !message ? <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/> : sanitizedHtml}
                     {embeds ? embeds.map((embed, index) => (
-                <div key={index} style={{borderColor: embed.color}} className="flex flex-row w-full dark:bg-neutral-900 hover:bg-neutral-800 rounded-sm my-2 border-l-4 p-4 h-auto">
-                    <div className="nowrap flex-flex-col w-auto mr-4">
-                        <a href={embed.url} className="text-lg font-bold flex-nowrap">{embed.title}</a>
-                        <h2 className="flex-nowrap text-base text-neutral-400">{embed.description}</h2>
-                    </div>
-
-                    <img className="rounded-md max-w-52 max-h-52" src={embed.image} alt="Embed Image"/>
-
-                </div>
-            )
-            ) : null}
+                        <div key={index}>
+                            {embed}
+                        </div>
+                    )) : null}
                 </div>
 
             </div>
@@ -109,21 +72,14 @@ export default function ChatMessage({message=null, author=null, group=false, new
                             <Skeleton circle={true} height={48} width={48} className="animate-pulse" baseColor="#404040" highlightColor="#404040"/>
                     }
             </div>
-            <div className={author? "flex flex-1 flex-col mt-2" : "flex flex-col flex-1 w-1/3 mt-2"}>
-                <div className="text-lg flex flex-row">{ !author ? <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/> : author.name} <span className="text-xs dark:text-neutral-300 mx-2 mt-1.5">{message? getTimeString(message.sendDate.toString()) : null}</span></div>
-                <div className="text-lg w-full text-neutral-400 flex items-center">{ !message ? <Skeleton className="animate-pulse" baseColor="#404040" highlightColor="#404040"/> : sanitizedHtml}</div>
+            <div className={author? "flex flex-1 flex-col mt-2" : "flex flex-col flex-1 w-full mt-3.5"}>
+                { !author ? <Skeleton containerClassName="animate-pulse w-1/3 mb-2 h-3 rounded-full" baseColor="#404040" highlightColor="#404040"/> : <div className="text-lg flex flex-row w-full">{author.name} <span className="text-xs dark:text-neutral-300 mx-2 mt-1.5">{message? getTimeString(message.sendDate.toString()) : null}</span></div>}
+                { !message ? <Skeleton containerClassName="animate-pulse w-2/3 h-5 rounded-lg" baseColor="#404040" highlightColor="#404040"/> : <div className="text-lg w-full text-neutral-400 flex items-center">{sanitizedHtml}</div>}
                 {embeds ? embeds.map((embed, index) => (
-                <div key={index} style={{borderColor: embed.color}} className="flex flex-row w-full dark:bg-neutral-900 hover:bg-neutral-800 rounded-sm my-2 border-l-4 p-4 h-auto">
-                <div className="nowrap flex-flex-col w-auto mr-4">
-                    <a href={embed.url} className="text-lg font-bold flex-nowrap">{embed.title}</a>
-                    <h2 className="flex-nowrap text-base text-neutral-400">{embed.description}</h2>
-                </div>
-
-                <img className="rounded-md w-1/4" src={embed.image} alt="Embed Image"/>
-
-            </div>
-            )
-            ) : null}
+                    <div key={index}>
+                        {embed}
+                    </div>
+                )) : null}
             </div>
 
         </div>
