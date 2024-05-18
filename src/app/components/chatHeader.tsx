@@ -15,11 +15,11 @@ export default function ChatHeader({chat, toggleSidebar, toggleMemberSidebar, ow
 
             <div className="flex flex-row float-left">
                 {owner ?
-                <div className="mx-2 flex-0 w-12 h-12 p-3.5 rounded-md dark:bg-neutral-800 dark:hover:bg-neutral-700 items-center">
+                <div className="mx-2 flex-0 w-12 h-12 p-3.5 rounded-xl dark:bg-neutral-800 dark:hover:bg-neutral-700 items-center">
                     <PencilIcon name="pencil" className="h-5 w-5 fill-neutral-300"/>
                 </div> : null}
 
-                <div onClick = {() => toggleMemberSidebar()} className="flex-0 w-12 h-12 p-3.5 rounded-md dark:bg-neutral-800 dark:hover:bg-neutral-700 items-center">
+                <div onClick = {() => toggleMemberSidebar()} className="flex-0 w-12 h-12 p-3.5 rounded-xl dark:bg-neutral-800 dark:hover:bg-neutral-700 items-center">
                     <UsersIcon name="users" className="h-5 w-5 fill-neutral-300"/>
                 </div>
             </div>

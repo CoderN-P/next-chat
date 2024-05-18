@@ -41,7 +41,7 @@ export default function MemberSidebar({users, toggleMemberSidebar = () => { }, o
                     users.map(
                         (user : User | null, index) => (
                             <button key={user?._id || index} onClick={()=>toggleProfile(user)} >
-                            <ChatMember showKick={(user && user?._id !== owner && userID===owner && userID) as boolean} user={user}/>
+                                <ChatMember showKick={(user && user?._id !== owner && userID===owner && userID) as boolean} user={user}/>
                             </button>
                         )
                     )

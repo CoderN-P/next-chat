@@ -1,4 +1,4 @@
-import {generateSnowflake} from '../db/utils/snowflake';
+import {generateSnowflake} from '../db/utils/snowflake.ts';
 
 class User {
     _id: string;

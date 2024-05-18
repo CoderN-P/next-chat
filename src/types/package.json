@@ -2,7 +2,7 @@
   "name": "db-types",
   "version": "1.0.0",
   "description": "DB Types for next-chat",
-  "main": "dist/types/index.js",
+  "main": "index.ts",
   "scripts": {
     "build": "tsc"
   },

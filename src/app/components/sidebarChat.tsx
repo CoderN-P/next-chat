@@ -4,14 +4,14 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import {Chat} from "@/types";
 
 export default function SidebarChat({ chat=null, active= false , expanded= false, notifications} : {chat: Chat | null, active: boolean, expanded?: boolean, notifications: number|undefined}){
-    let className = "relative border p-2 dark:border-neutral-800 mb-2 flex flex-row w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 h-16 bg-neutral-300 dark:bg-neutral-900 rounded-md shadow";
+    let className = "relative border p-2 dark:border-neutral-800 mb-2 flex flex-row w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 h-16 bg-neutral-300 dark:bg-neutral-900 rounded-xl shadow";
     let className2 = "hidden ml-4 text-left lg:block flex-1 flex justify-center  h-full";
 
     if (expanded){
         className2 = " flex-1 ml-2 text-left flex justify-center h-full";
     }
     if (active) {
-        className = "relative mb-2 p-2 dark:border-neutral-800 border flex flex-row w-full hover:bg-neutral-300 dark:hover:bg-neutral-900 h-16 bg-neutral-200 dark:bg-neutral-800 rounded-md shadow";
+        className = "relative mb-2 p-2 dark:border-neutral-800 border flex flex-row w-full hover:bg-neutral-300 dark:hover:bg-neutral-900 h-16 bg-neutral-200 dark:bg-neutral-800 rounded-xl shadow";
     }
 
 

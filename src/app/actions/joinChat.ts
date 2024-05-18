@@ -1,5 +1,8 @@
 'use server';
-import {readChat, readUser, updateChat, updateUser} from '@/db';
+import {readChat} from '@/db/read/chat.ts';
+import {updateChat} from '@/db/update/chat.ts';
+import {updateUser} from '@/db/update/user.ts';
+
 
 async function joinChatAction(data: string) {
     const dataObj = JSON.parse(data);

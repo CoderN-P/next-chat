@@ -81,7 +81,6 @@ export default function Home() {
             let newData = [];
             for (let i = 0; i < data.length; i++){
                 newData[i] = Chat.convertFromJSON(data[i]);
-                console.log(newData[i]);
             }
             setChats(newData);
         });
@@ -122,14 +121,14 @@ export default function Home() {
             let newChats = [...chats];
             newChats.push(newChat);
             getChatMembers(newChat._id).then((data) => {
-                const jsonData = JSON.parse(data as string);
-                setCurrentChatMembers(
-                    jsonData.map(
-                        (user: Map<string, any>) => (
-                            User.convertFromJSON(user)
+                    const jsonData = JSON.parse(data as string);
+                    setCurrentChatMembers(
+                        jsonData.map(
+                            (user: Map<string, any>) => (
+                                User.convertFromJSON(user)
+                            )
                         )
-                    )
-                );
+                    );
                 }
             );
             return newChats;
@@ -165,7 +164,7 @@ export default function Home() {
             if (curChat) {
                 setCurrentMessageIDX(currentMessageIDX + 1);
                 const messageObj: Message = Message.convertFromJSON(messageData);
-        
+
                 return Chat.convertFromJSON({
                         "_id": curChat._id,
                         "name": curChat.name,
@@ -205,9 +204,9 @@ export default function Home() {
 
     useEffect(() => {
         if (!("Notification" in window)) {
-          console.log("Browser does not support desktop notification");
+            console.log("Browser does not support desktop notification");
         } else {
-          Notification.requestPermission();
+            Notification.requestPermission();
         }
     }, []);
 
@@ -292,7 +291,7 @@ export default function Home() {
 
     function toggleSidebar(){
         if (!expanded){
-             setClassName("flex-1 flex flex-col h-full blur-sm");
+            setClassName("flex-1 flex flex-col h-full blur-sm");
         } else {
             if (!memberExpanded) {
                 setClassName("flex-1 flex flex-col h-full");
@@ -323,20 +322,20 @@ export default function Home() {
                 setCurrentMessageIDX(jsonData["newIDX"]);
                 chat.messages = jsonData["messages"];
                 setCurrentChat(chat);
-                
+
                 setLoadingMessages(false);
             }
         );
 
         getChatMembers(chatID).then((data) => {
-            const jsonData = JSON.parse(data as string);
-            setCurrentChatMembers(
-                jsonData.map(
-                    (user: Map<string, any>) => (
-                        User.convertFromJSON(user)
+                const jsonData = JSON.parse(data as string);
+                setCurrentChatMembers(
+                    jsonData.map(
+                        (user: Map<string, any>) => (
+                            User.convertFromJSON(user)
+                        )
                     )
-                )
-            );
+                );
             }
         );
     }
@@ -345,13 +344,13 @@ export default function Home() {
         setLoadingShareCode(false);
         setShareCode(null);
         setCreateChatError(null);
-         setCreateChatUI(!createChatUI);
+        setCreateChatUI(!createChatUI);
     }
 
     function toggleMemberSidebar(){
         if (!memberExpanded){
-             setClassName("flex-1 flex flex-col h-full blur-sm");
-             setChatSidebarClass("blur-sm");
+            setClassName("flex-1 flex flex-col h-full blur-sm");
+            setChatSidebarClass("blur-sm");
         } else {
             if (!expanded){
                 setClassName("flex-1 flex flex-col h-full");
@@ -364,27 +363,30 @@ export default function Home() {
 
     let [showProfile, setShowProfile] = useState<boolean>(false);
     let [currentProfile, setCurrentProfile] = useState<User|null>(null);
+
     function toggleProfile(user: User|null){
         if (showProfile){
             setCurrentProfile(null);
+            setClassName("flex-1 flex flex-col h-full")
+            setChatSidebarClass("");
         } else {
             setCurrentProfile(user);
-
+            setMemberExpanded(false);
         }
         setShowProfile(!showProfile);
     }
 
     useEffect(() => {
-      const unloadCallback = (event: Event) => {
+        const unloadCallback = (event: Event) => {
 
-        if (user) {
-            socket.emit("user_disconnect", user._id);
-        }
-        return "";
-      };
+            if (user) {
+                socket.emit("user_disconnect", user._id);
+            }
+            return "";
+        };
 
-      window.addEventListener("beforeunload", unloadCallback);
-      return () => window.removeEventListener("beforeunload", unloadCallback);
+        window.addEventListener("beforeunload", unloadCallback);
+        return () => window.removeEventListener("beforeunload", unloadCallback);
     }, [socket, user]);
 
     let [alreadyOnline, setAlreadyOnline] = useState<boolean>(false);
@@ -410,34 +412,33 @@ export default function Home() {
 
 
 
-  return (
-    <main className="h-screen w-screen">
-        { !session && status != "loading" ? <LoginModal/> : null}
-        { createChatUI ? <CreateChatUI toggleMode={toggleMode} currentMode={currentMode} error={createChatError} createChatClient={createChatClient} shareCode={shareCode} submitting={loadingShareCode} toggleCreateChatUI={toggleCreateChatUI}/> : null }
-        <div className={(!session && status != "loading") || (createChatUI) ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
-        <div className={chatSidebarClass}>
-            { expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
-        </div>
-            { showProfile ? <ProfileView toggleProfile={toggleProfile} user={currentProfile} /> : null }
-        <div className={showProfile? "blur-sm" : ""}>
-        { memberExpanded ? <MemberSidebar toggleProfile={toggleProfile} userID={user?._id} chatID={currentChat?._id} owner={currentChat?.owner} users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
-       </div>
-        <div className="flex flex-row h-full w-full">
-        <div className={chatSidebarClass}>
-            { !expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
-        </div>
+    return (
+        <main className="h-screen w-screen">
+            { !session && status != "loading" ? <LoginModal/> : null}
+            { createChatUI ? <CreateChatUI toggleMode={toggleMode} currentMode={currentMode} error={createChatError} createChatClient={createChatClient} shareCode={shareCode} submitting={loadingShareCode} toggleCreateChatUI={toggleCreateChatUI}/> : null }
+            <div className={(!session && status != "loading") || (createChatUI) ? "w-full h-full opacity-50 blur-sm" : "w-full h-full"}>
+                <div className={chatSidebarClass}>
+                    { expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
+                </div>
+                { showProfile ? <ProfileView toggleProfile={toggleProfile} user={currentProfile} /> : null }
+                <div>
+                    { memberExpanded ? <MemberSidebar toggleProfile={toggleProfile} userID={user?._id} chatID={currentChat?._id} owner={currentChat?.owner} users={currentChatMembers} toggleMemberSidebar={toggleMemberSidebar}/>: null }
+                </div>
+                <div className="flex flex-row h-full w-full">
+                    <div className={chatSidebarClass}>
+                        { !expanded ? <Sidebar notifications={notifications} curChatID={currentChat?._id} chats={chats} user={user} expanded={expanded} toggleSidebar={toggleSidebar} toggleCreateChatUI={toggleCreateChatUI} loadChat={loadChat}/>: null }
+                    </div>
 
-        <div className={className}>
-            <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
-            <ChatUI chat={currentChat} notifications={curNotifications} loadingMessages={loadingMessages} users={currentChatMembers}/>
-            <MessageBox sendMessage={sendMessage}/>
-        </div>
-        </div>
+                    <div className={className}>
+                        <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
+                        <ChatUI chat={currentChat} notifications={curNotifications} loadingMessages={loadingMessages} users={currentChatMembers}/>
+                        <MessageBox sendMessage={sendMessage}/>
+                    </div>
+                </div>
             </div>
-    </main>
-  );
+        </main>
+    );
 }
-
 
 
 

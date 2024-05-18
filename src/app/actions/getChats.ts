@@ -1,5 +1,6 @@
 'use server';
-import {readUser, db} from '@/db';
+import {db} from '@/db/connect.ts';
+import {readUser} from '@/db/read/user.ts';
 import {Chat} from '@/types';
 
 async function getChats(id: string) {

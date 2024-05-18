@@ -1,4 +1,4 @@
-import {db} from '../connect';
+import {db} from '../connect.ts';
 import {Chat} from '../../types'
 
 async function readChat(id: string){

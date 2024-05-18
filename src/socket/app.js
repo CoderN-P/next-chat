@@ -2,7 +2,7 @@ const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
 const { readChat, createMessage, createChat, updateUser, updateChat, readUser, db } = require('../db');
-const {Message, Chat, User} = require('../types');
+const {Message, Chat, User} = require('../types/dist/types/index');
 const server = express();
 const httpServer = http.createServer(server);
 

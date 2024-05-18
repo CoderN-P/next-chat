@@ -1,4 +1,4 @@
-import {generateSnowflake} from '../db/utils/snowflake';
+import {generateSnowflake} from '../db/utils/snowflake.ts';
 import {Message} from './Message';
 
 class Chat {

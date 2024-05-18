@@ -1,5 +1,5 @@
 'use server';
-import {createChat} from '@/db';
+import {createChat} from '@/db/create/chat.ts';
 import {Chat} from '@/types';
 
 async function createChatAction(data: string) {

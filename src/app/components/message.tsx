@@ -11,7 +11,6 @@ const marked = require("marked");
 import {useEffect, useMemo, useState} from "react";
 import urlMetadata from 'url-metadata';
 import '@/app/globals.css';
-import {getUrlMetadata} from "@/app/actions/getUrlMetadata";
 import {embed} from "@/types";
 
 
@@ -21,13 +20,14 @@ export default function ChatMessage({message=null, author=null, group=false, new
     const regexString = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
     const regex = new RegExp(regexString);
     let [embeds, setEmbeds] = useState<embed[]>([]);
+
     useEffect(() => {
         if (message && embeds.length == 0){
             const urls = regex.exec(message.content);
             if (!urls){
                 return;
             }
-            Promise.all(urls.map(url => getUrlMetadata(url)))
+            Promise.all(urls.map(url => urlMetadata(url)))
                 .then(dataArray => {
                     // dataArray is an array of the resolved values of all promises
                     // Filter out any null values and map to the embed format
