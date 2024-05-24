@@ -1,17 +1,17 @@
 "use client";
 
 import ChatMessage from "@/app/components/message";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Chat, User, Message, embed} from "@/types";
 import loadMessages from "@/app/actions/loadMessages.ts";
 
 export default function ChatUI({chat=null, users, embeds, loadingMessages=false, notifications, setLoadingMessages, currentMessageIDX, setCurrentMessageIDX, setCurrentChat}: {chat?: Chat | null, users: (User|null)[], embeds: (any[]|null)[], loadingMessages: boolean, notifications: number|undefined, setLoadingMessages: Function, currentMessageIDX: number, setCurrentMessageIDX: Function, setCurrentChat: Function}){
     const messages = []
-
+    const [oldHeight, setOldHeight] = useState<number | null>(null);
+    const [oldMessageID, setOldMessageID] = useState<string | null>(null);
     const divRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        console.log('adding event listener');
         const handleScroll = () => {
             if (!divRef.current) return;
             if (!chat) return;
@@ -19,15 +19,20 @@ export default function ChatUI({chat=null, users, embeds, loadingMessages=false,
             const divElement = divRef.current;
             if (divElement.scrollHeight + divElement.scrollTop - divElement.clientHeight < 1) {
                 setLoadingMessages(true);
-                console.log(currentMessageIDX);
+
                 loadMessages(chat._id, currentMessageIDX, 50).then((data) => {
                     const res = JSON.parse(data);
 
                     setCurrentMessageIDX(res["newIDX"]);
                     const newMessages = res["messages"];
-                    divRef.current.scrollTop = divRef.current.clientHeight - divRef.current.scrollHeight;
-                    setCurrentChat((chat: Chat) => { return {...chat, messages: [newMessages, ...chat.messages]} });
+
+                    setCurrentChat({
+                        ...chat,
+                        messages: [...newMessages, ...chat.messages]
+                    });
                     setLoadingMessages(false);
+                    setOldHeight(divElement.scrollHeight);
+                    setOldMessageID(chat.messages[0]._id);
                 });
                 console.log('Scrolled to the top');
                 // You can add your logic here
@@ -44,12 +49,19 @@ export default function ChatUI({chat=null, users, embeds, loadingMessages=false,
         };
     }, [chat, currentMessageIDX, divRef, loadingMessages, setCurrentChat, setCurrentMessageIDX, setLoadingMessages]);
 
-
     if (loadingMessages){
         for (let i = 0; i < 10; i++) {
             messages.push(null);
         }
     }
+
+
+    useEffect(() => {
+        if (divRef.current && oldHeight && oldMessageID){
+            if (divRef.current.scrollHeight - oldHeight <= 0) return;
+            document.getElementById(oldMessageID)?.scrollIntoView()
+        }
+    }, [divRef.current?.scrollHeight, oldHeight, oldMessageID]);
 
 
     let className = "flex w-full justify-items-end no-scrollbar flex-col-reverse h-full p-4 overflow-y-scroll";
@@ -64,7 +76,7 @@ export default function ChatUI({chat=null, users, embeds, loadingMessages=false,
                     { loadingMessages ?
                     messages.map(
                             (message, index) => (
-                                <ChatMessage embeds={[]} newMessage={false} key={index}/>
+                                <ChatMessage embeds={[]} newMessage={false} curKey={index} key={index}/>
                             )
                         )
                      : [...chat.messages].reverse().map(
@@ -73,7 +85,7 @@ export default function ChatUI({chat=null, users, embeds, loadingMessages=false,
                                     group={
                                     (index < chat.messages.length-1 && chat.messages[chat.messages.length-index-2].sender === chat.messages[chat.messages.length-index-1].sender)
                                         ? group(chat.messages[chat.messages.length-index-2].sendDate, chat.messages[chat.messages.length-index-1].sendDate)
-                                        : false} newMessage={index < (notifications? notifications : 0) } key={index} embeds={embeds[chat.messages.length-index-1] || []} message={message} author={users.find((user) => user?._id === message?.sender)}/>
+                                        : false} newMessage={index < (notifications? notifications : 0) } curKey={index} key={index} embeds={embeds[chat.messages.length-index-1] || []} message={message} author={users.find((user) => user?._id === message?.sender)}/>
                             )
                     )
                 }</>

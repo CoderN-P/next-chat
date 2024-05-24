@@ -23,6 +23,9 @@ const Embed = React.memo(({ url } : {url: string}) => {
                 // Set the state with the new embeds
 
                 setEmbed(embed);
+            }).catch(() => {
+                setUnsuccesful(true);
+                return;
             });
         }
     }, [embed, unsuccesful, url]);

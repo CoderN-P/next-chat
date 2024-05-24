@@ -319,6 +319,7 @@ export default function Home() {
         loadMessages(chatID, 0, 50).then((data) => {
                 const jsonData = JSON.parse(data);
                 setCurrentMessageIDX(jsonData["newIDX"]);
+                console.log(jsonData["newIDX"]);
                 chat.messages = jsonData["messages"];
                 setCurrentChat(chat);
 

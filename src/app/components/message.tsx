@@ -12,7 +12,7 @@ import '@/app/globals.css';
 
 
 
-export default function ChatMessage({message=null, author=null, group=false, newMessage, embeds} : {message?: Message|null, author?: User|null, group?: boolean, newMessage: boolean, embeds: any[]}){
+export default function ChatMessage({message=null, author=null, group=false, newMessage, embeds, curKey} : {message?: Message|null, author?: User|null, group?: boolean, newMessage: boolean, embeds: any[], curKey: number}){
     let updatedMessageContent = "";
     let sanitizedHtml = `<div class="w-full"></div>`;
 
@@ -39,7 +39,7 @@ export default function ChatMessage({message=null, author=null, group=false, new
 
     if (group){
         return (
-            <div className={newMessage? "flex flex-row group px-1 w-full dark:bg-blue-500/10 items-center dark:hover:bg-neutral-900" : "flex flex-row group px-1 w-full rounded-md items-center dark:hover:bg-neutral-900"}>
+            <div id={message? message._id : curKey.toString()} className={newMessage? "flex flex-row group px-1 w-full dark:bg-blue-500/10 items-center dark:hover:bg-neutral-900" : "flex flex-row group px-1 w-full rounded-md items-center dark:hover:bg-neutral-900"}>
                 <div className="float-left mr-1 text-xs text-neutral-500 w-14">
                     <div className="hidden group-hover:block">
                         {message? getTimeString(message.sendDate.toString(), false) : null}
@@ -63,7 +63,7 @@ export default function ChatMessage({message=null, author=null, group=false, new
     }
 
     return (
-        <div className={className}>
+        <div id={message? message._id : curKey.toString()} className={className}>
 
             <div className="flex-0 w-16 h-16 p-2 rounded-l-md">
                     {
