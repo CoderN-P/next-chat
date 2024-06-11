@@ -5,13 +5,16 @@ const { readChat, createMessage, createChat, updateUser, updateChat, readUser, d
 const {Message, Chat, User} = require('../types/dist/types/index');
 const server = express();
 const httpServer = http.createServer(server);
+const dotenv = require('dotenv');
+dotenv.config({ path: '.env.local' });
 
+const origin = process.env.ORIGIN || 'http://localhost:3000';
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: origin,
         methods: ['GET', 'POST'],
     }
-});;
+});
 
 
 io.on('connection', (socket) => {
