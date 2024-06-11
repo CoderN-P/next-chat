@@ -8,7 +8,9 @@ const httpServer = http.createServer(server);
 const dotenv = require('dotenv');
 dotenv.config({ path: '.env.local' });
 
+
 const origin = process.env.ORIGIN || 'http://localhost:3000';
+
 const io = new Server(httpServer, {
     cors: {
         origin: origin,
