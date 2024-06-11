@@ -37,7 +37,8 @@ export default function Home() {
     // Get current user
     const {data: session, status} = useSession();
 
-    var socket = io("http://localhost:3001");
+    const socketBackend = process.env.NEXT_PUBLIC_SOCKET_BACKEND || "http://localhost:3001";
+    var socket = io(socketBackend);
 
     let initialState = [];
     if (user){
