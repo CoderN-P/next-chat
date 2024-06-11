@@ -15,7 +15,7 @@ async function getChats(id: string) {
 
     const chatCollection = db.collection('chats');
     for (let i = 0; i < chats.length; i++) {
-        const chat = await chatCollection.findOne({_id: chats[i]}, {projection: projection});
+        const chat = await chatCollection.findOne({_id: chats[i]});
         chatObjects.push(chat);
     }
 

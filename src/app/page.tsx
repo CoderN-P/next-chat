@@ -32,6 +32,8 @@ export default function Home() {
     const [currentMessageIDX, setCurrentMessageIDX] = useState<number>(0);
     const [currentChatMembers, setCurrentChatMembers] = useState<(User|null)[]>([null, null, null, null, null]);
     const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
+    const [totalMessages, setTotalMessages] = useState<number>(0);
+
     // Get current user
     const {data: session, status} = useSession();
 
@@ -305,9 +307,11 @@ export default function Home() {
 
     function loadChat(chatID: string){
         const chat = chats.find((chat) => chat?._id == chatID);
+
         if (!chat){
             return;
         }
+        setTotalMessages(chat.messages.length);
         setNotifications((notifications) => {
             let newNotifications = new Map<string, number>(notifications);
             setCurNotifications(notifications.get(chatID) as number);
@@ -319,7 +323,7 @@ export default function Home() {
         loadMessages(chatID, 0, 50).then((data) => {
                 const jsonData = JSON.parse(data);
                 setCurrentMessageIDX(jsonData["newIDX"]);
-                console.log(jsonData["newIDX"]);
+
                 chat.messages = jsonData["messages"];
                 setCurrentChat(chat);
 
@@ -455,7 +459,7 @@ export default function Home() {
 
                     <div className={className}>
                         <ChatHeader chat={currentChat} owner={currentChat?.owner == user?._id} toggleSidebar={toggleSidebar} toggleMemberSidebar={toggleMemberSidebar}/>
-                        <ChatUI embeds={embeds} setLoadingMessages={setLoadingMessages} setCurrentChat={setCurrentChat} chat={currentChat} setCurrentMessageIDX={setCurrentMessageIDX} notifications={curNotifications} currentMessageIDX={currentMessageIDX} loadingMessages={loadingMessages} users={currentChatMembers}/>
+                        <ChatUI totalMessages={totalMessages} embeds={embeds} setLoadingMessages={setLoadingMessages} setCurrentChat={setCurrentChat} chat={currentChat} setCurrentMessageIDX={setCurrentMessageIDX} notifications={curNotifications} currentMessageIDX={currentMessageIDX} loadingMessages={loadingMessages} users={currentChatMembers}/>
                         <MessageBox sendMessage={sendMessage}/>
                     </div>
                 </div>

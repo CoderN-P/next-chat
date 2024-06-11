@@ -47,4 +47,6 @@ const Embed = React.memo(({ url } : {url: string}) => {
     );
 });
 
+Embed.displayName = 'Embed';
+
 export default Embed;
