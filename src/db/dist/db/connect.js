@@ -7,7 +7,7 @@ require('dotenv').config({ path: '.env.local' });
 // Load MongoDB driver
 var _a = require('mongodb'), MongoClient = _a.MongoClient, ServerApiVersion = _a.ServerApiVersion;
 // Load X.509 certificate
-var credentials = 'src/db/X509-cert-7229008834198183053.pem';
+var credentials = 'src/db/X509-cert-3558676617755470267.pem';
 // Create new MongoClient instance
 
 var client = new MongoClient(process.env.MONGOURI, {
